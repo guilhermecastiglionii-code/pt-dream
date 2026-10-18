@@ -23,7 +23,7 @@ jobs:
           python-version: "3.12"
       - name: Ler highscore
         env:
-          FIREBASE_PROJECT: ${{ vars.FIREBASE_PROJECT }}
+          FIREBASE_PROJECT: pt-dream
         run: python scripts/update.py
       - name: Salvar
         run: |
