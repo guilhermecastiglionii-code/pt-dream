@@ -172,6 +172,7 @@ button.x:hover{color:var(--bad)}
     <div class="live">
       <span class="chip" id="status"><i class="dot"></i>Carregando…</span>
       <span class="chip" id="ss"><i class="dot" style="background:var(--gold)"></i>Server save</span>
+      <button id="syncBtn" type="button" hidden style="padding:6px 11px">Atualizar agora</button>
       <button class="ghost" id="authBtn" type="button" hidden style="padding:6px 11px">Entrar para editar</button>
     </div>
   </div>
@@ -249,6 +250,12 @@ button.x:hover{color:var(--bad)}
   <!-- AJUSTES -->
   <div role="tabpanel" id="p-ajustes" aria-labelledby="t-ajustes" hidden>
     <div class="win"><div class="win-t"><h2>Personagens da PT</h2><span class="note">Salva para todos da PT</span></div><div class="win-b scroll"><table id="ajustes"></table></div></div>
+    <div class="win"><div class="win-t"><h2>Administradores</h2><span class="note" id="aNote">podem editar tudo no site</span></div>
+      <div class="win-b" style="display:grid;gap:10px">
+        <div class="wl" id="aList"></div>
+        <form id="addAdmin" class="wl"><label for="aMail" style="flex:1;min-width:220px">Adicionar e-mail Google<input id="aMail" type="email" placeholder="nome@gmail.com"></label><button type="submit" style="align-self:end">Adicionar</button></form>
+        <p class="note" style="margin:0">A pessoa entra no site com essa conta Google (botão no topo) e já pode editar vendas, chars, metas, servidores e usar o Atualizar agora.</p>
+      </div></div>
     <div class="win"><div class="win-t"><h2>Servidores no ranking</h2><span class="note" id="wNote">até 5 servidores</span></div>
       <div class="win-b" style="display:grid;gap:10px">
         <div class="wl" id="wList"></div>
@@ -338,7 +345,7 @@ function charStats(c){const ser=series(c.name),last=ser[ser.length-1]||null,prev
   return st}
 
 /* render */
-function render(){if(!S.cfg)return;renderWorlds();const stats=S.cfg.chars.map(charStats);renderStatus();renderPainel(stats);renderRanking();renderMetas(stats);renderCalc();renderVendas();renderAjustes()}
+function render(){if(!S.cfg)return;renderWorlds();renderAdmins();const stats=S.cfg.chars.map(charStats);renderStatus();renderPainel(stats);renderRanking();renderMetas(stats);renderCalc();renderVendas();renderAjustes()}
 
 /* ranking do servidor */
 const VAB={"Royal Paladin":"RP","Paladin":"P","Elder Druid":"ED","Druid":"D","Master Sorcerer":"MS","Sorcerer":"S","Elite Knight":"EK","Knight":"K","Exalted Monk":"EM","Monk":"M","None":"N"};
@@ -378,14 +385,22 @@ function syncWorldSel(){const sel=$("rkWorld"),ws=worlds();if(!S.rkWorld||!ws.in
   const html=ws.map(w=>`<option${w===S.rkWorld?" selected":""}>${esc(w)}</option>`).join("");if(sel.dataset.h!==html){sel.innerHTML=html;sel.dataset.h=html}}
 async function getText(u){const r=await fetch(u+"?t="+Date.now());if(!r.ok)throw new Error(u);return r.text()}
 async function subWorld(w){if(!w||S.subs[w])return;S.subs[w]=1;
-  try{const idx=S.srvIdx||(S.srvIdx=JSON.parse(await getText("data/srv/index.json")));const ds=(idx[w]||[]).slice().sort();if(!ds.length){S.srv[w]=[];render();return}
+  try{let idx={};try{idx=S.srvIdx||(S.srvIdx=JSON.parse(await getText("data/srv/index.json")))}catch(e){}
+    const fbDocs={};if(S.db){try{const q=await S.db.collection("srv/"+w+"/days").orderBy("date","desc").limit(40).get();q.docs.forEach(d=>{const v=d.data();if(v&&v.raw)fbDocs[v.date]=v})}catch(e){}}
+    const ds=[...new Set([...(idx[w]||[]),...Object.keys(fbDocs)])].sort();if(!ds.length){S.srv[w]=[];render();return}
     const L=ds[ds.length-1],pick=new Set([L,ds[ds.length-2]]);[7,30].forEach(k=>{const t=iso(new Date(toDate(L)-k*dayMs));let b=null;ds.forEach(d=>{if(d<=t)b=d});pick.add(b||ds[0])});
-    const list=[...pick].filter(Boolean).sort();const docs=await Promise.all(list.map(async d=>({date:d,raw:await getText(`data/srv/${encodeURIComponent(w)}/${d}.txt`)})));
+    const list=[...pick].filter(Boolean).sort();const docs=await Promise.all(list.map(async d=>fbDocs[d]?{date:d,raw:fbDocs[d].raw}:({date:d,raw:await getText(`data/srv/${encodeURIComponent(w)}/${d}.txt`)})));
     S.srv[w]=docs;render()}catch(e){S.srv[w]=[];render()}}
 function syncSubs(){const keep=new Set([ptWorld(),S.rkWorld||ptWorld()]);keep.forEach(subWorld);
   Object.keys(S.subs).forEach(w=>{if(!keep.has(w)){delete S.subs[w];delete S.srv[w]}})}
 $("rkWorld").addEventListener("change",e=>{S.rkWorld=e.target.value;try{localStorage.setItem("ptWorld",S.rkWorld)}catch(x){}syncSubs();renderRanking()});
 try{S.rkWorld=localStorage.getItem("ptWorld")}catch(e){}
+function renderAdmins(){const own="guilhermecastiglionii@gmail.com",ed=(S.cfg&&S.cfg.editores)||[];
+  $("aList").innerHTML=[`<span class="wchip">${own} <span class="note">(dono)</span></span>`].concat(ed.filter(e=>e!==own).map(e=>`<span class="wchip">${esc(e)}${S.canWrite?`<button class="x" type="button" data-a="${esc(e)}" aria-label="Remover ${esc(e)}">×</button>`:""}</span>`)).join("");
+  $("addAdmin").hidden=!S.canWrite}
+$("addAdmin").addEventListener("submit",e=>{e.preventDefault();const m=$("aMail").value.trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)){$("aNote").textContent="E-mail inválido.";return}
+  const ed=[...new Set([...((S.cfg.editores)||[]),m])];saveCfg({editores:ed});$("aMail").value="";$("aNote").textContent=m+" agora é administrador."});
+$("aList").addEventListener("click",e=>{const b=e.target.closest("button[data-a]");if(!b)return;saveCfg({editores:(S.cfg.editores||[]).filter(x=>x!==b.dataset.a)})});
 function renderWorlds(){const ws=worlds();$("wList").innerHTML=ws.map(w=>`<span class="wchip">${esc(w)}${w===ptWorld()?' <span class="note">(PT)</span>':(S.canWrite?`<button class="x" type="button" data-w="${esc(w)}" aria-label="Remover ${esc(w)}">×</button>`:"")}</span>`).join("");
   $("addWorld").hidden=!S.canWrite||ws.length>=5}
 $("addWorld").addEventListener("submit",e=>{e.preventDefault();let w=$("wName").value.trim().toLowerCase();if(!w||!/^[a-z]+$/.test(w)){$("wNote").textContent="Use só o nome do servidor, sem espaço.";return}
@@ -561,24 +576,44 @@ $("vendas").addEventListener("click",async e=>{const b=e.target.closest("button[
   if(!delArm[id]){delArm[id]=1;b.textContent="apagar?";b.style.color="var(--bad)";b.style.fontSize="12px";setTimeout(()=>{delArm[id]=0;if(b.isConnected){b.textContent="×";b.style.color="";b.style.fontSize=""}},3000);return}
   try{await S.db.doc("vendas/"+id).delete();vendMsg("Item apagado",true)}catch(err){vendErr(err)}});
 
+/* atualização manual: busca o highscore direto da API e grava no Firebase */
+async function hsPage(w,cat,n){const r=await fetch(`https://api.tibiadata.com/v4/highscores/${encodeURIComponent(w)}/${cat}/all/${n}`);if(!r.ok)throw new Error("API "+r.status);const j=await r.json();return{list:(j.highscores&&j.highscores.highscore_list)||[],ts:j.information&&j.information.timestamp}}
+async function atualizarAgora(){const btn=$("syncBtn");if(btn.disabled)return;btn.disabled=true;const say=t=>btn.textContent=t;
+  try{const today=todayBR(),pw=ptWorld();let stamp=null;const rowsBy={};const ws=worlds();
+    for(const w of ws){let rows=[];for(let n=1;n<=10;n++){say(`${w} ${n*10}%`);const p=await hsPage(w,"experience",n);stamp=stamp||p.ts;rows=rows.concat(p.list);if(p.list.length<50)break}
+      if(!rows.length)continue;rowsBy[w]=rows;
+      await S.db.doc(`srv/${w}/days/${today}`).set({date:today,source:"manual",fetchedAt:stamp||new Date().toISOString(),raw:rows.map(r=>`${r.rank}|${r.name}|${r.vocation}|${r.level}|${r.value}`).join("\n")})}
+    say("PT…");const want=new Map((S.cfg.chars||[]).map(c=>[c.name.toLowerCase(),c]));const found={};
+    let pool=rowsBy[pw]||[],n=11;while(true){pool.forEach(r=>{const c=want.get(r.name.toLowerCase());if(c&&!found[c.name])found[c.name]={exp:+r.value,level:+r.level}});
+      if(Object.keys(found).length>=want.size||n>20)break;const p=await hsPage(pw,"experience",n++);if(!p.list.length)break;pool=p.list}
+    const cats={};(S.cfg.chars||[]).forEach(c=>{if(c.skillCat&&found[c.name])(cats[c.skillCat]=cats[c.skillCat]||[]).push(c.name)});
+    for(const [cat,names] of Object.entries(cats)){const left=new Map(names.map(x=>[x.toLowerCase(),x]));for(let p=1;p<=3&&left.size;p++){const r=await hsPage(pw,cat,p);r.list.forEach(e=>{const k=e.name.toLowerCase();if(left.has(k)){found[left.get(k)].skill=+e.value;left.delete(k)}});if(!r.list.length)break}}
+    if(Object.keys(found).length)await S.db.doc("snaps/"+today).set({source:"manual",fetchedAt:stamp||new Date().toISOString(),chars:found,by:(S.user&&S.user.email)||""});
+    S.subs={};S.srv={};syncSubs();say("Atualizado ✔");setTimeout(()=>say("Atualizar agora"),3000)}
+  catch(e){say("Falhou");vendMsg("Atualização falhou: "+(e.code==="permission-denied"?"sua conta não é administradora":(e.message||e)));setTimeout(()=>say("Atualizar agora"),3000)}
+  finally{btn.disabled=false}}
 /* dados: arquivos do repositório + Firebase para o que é editável */
 function alertRO(){const n=$("status");if(S.user&&!S.roWarned){S.roWarned=1;vendMsg("A conta "+S.user.email+" não está liberada para editar.")}}
 const FB=window.FIREBASE_CONFIG||null;
 function useSeed(seed){if(!S.cfg){S.cfg=JSON.parse(JSON.stringify(seed.config))}if(!S.fbVendas){S.vendas=Object.entries(seed.vendas||{}).map(([id,v])=>({id,...v}))}}
-function updAuthUI(){const b=$("authBtn");if(!S.fb){b.hidden=true;S.canWrite=false;return}b.hidden=false;
+function mergeSnaps(){const all={...(S.snapsRepo||{}),...(S.snapsFb||{})};S.snaps=Object.entries(all).map(([date,v])=>({date,...v})).sort((a,b)=>a.date.localeCompare(b.date))}
+function updAuthUI(){const b=$("authBtn");$("syncBtn").hidden=!(S.fb&&S.user);if(!S.fb){b.hidden=true;S.canWrite=false;return}b.hidden=false;
   b.textContent=S.user?("Sair ("+(S.user.email||"").split("@")[0]+")"):"Entrar para editar";
   S.canWrite=!!S.user;const f=$("vendForm").closest(".win");if(f)f.hidden=!S.canWrite;render()}
 (async()=>{
   S.canWrite=false;$("vendForm").closest(".win").hidden=true;
   let seed={config:{chars:[]},vendas:{}};
   try{seed=JSON.parse(await getText("data/seed.json"))}catch(e){}
-  try{const sn=JSON.parse(await getText("data/snaps.json"));S.snaps=Object.entries(sn).map(([date,v])=>({date,...v})).sort((a,b)=>a.date.localeCompare(b.date))}catch(e){}
+  try{S.snapsRepo=JSON.parse(await getText("data/snaps.json"))}catch(e){S.snapsRepo={}}
+  mergeSnaps();
   if(FB&&window.firebase){
     try{firebase.initializeApp(FB);const db=firebase.firestore();S.db=db;S.fb=1;
       firebase.auth().onAuthStateChanged(u=>{S.user=u||null;S.roWarned=0;updAuthUI()});
       $("authBtn").addEventListener("click",()=>{if(S.user)firebase.auth().signOut();else firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>vendMsg("Não entrou: "+(e.message||e.code)))});
       db.doc("config/main").onSnapshot(s=>{if(s.exists){S.cfg=JSON.parse(JSON.stringify(s.data()));}else{S.cfg=null;useSeed(seed);S.needImport=1}
         syncWorldSel();syncSubs();render();showImport()},()=>{useSeed(seed);syncWorldSel();syncSubs();render()});
+      db.collection("snaps").onSnapshot(q=>{S.snapsFb={};q.docs.forEach(d=>{S.snapsFb[d.id]=d.data()});mergeSnaps();render()},()=>{});
+      $("syncBtn").addEventListener("click",atualizarAgora);
       db.collection("vendas").onSnapshot(q=>{S.fbVendas=1;S.vendas=q.docs.map(d=>({id:d.id,...d.data()}));if(!q.size&&S.needImport)S.vendas=Object.entries(seed.vendas||{}).map(([id,v])=>({id,...v}));render()},()=>{});
       updAuthUI();
     }catch(e){S.fb=0;useSeed(seed);syncWorldSel();syncSubs();render()}
