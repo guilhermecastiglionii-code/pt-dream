@@ -654,15 +654,240 @@
 },
 "source": "planilha/guildstats"
 },
-"2026-10-18": {
-"source": "tibiadata",
-"fetchedAt": "2026-10-18T19:20:00Z",
+"2026-10-06": {
+"source": "guildstats",
 "chars": {
-"Gabz Implacavel": {
-"exp": 192551430213,
-"level": 2262,
-"skill": 139
+"Marcha Implacavel": {
+"exp": 174393724976,
+"level": 2189
 },
+"Twiiu": {
+"exp": 156296689010,
+"level": 2110
+},
+"Kipersz": {
+"exp": 151436497360,
+"level": 2088
+},
+"Gabz Implacavel": {
+"exp": 190831768520,
+"level": 2255
+}
+}
+},
+"2026-10-07": {
+"source": "guildstats",
+"chars": {
+"Marcha Implacavel": {
+"exp": 174661455557,
+"level": 2190
+},
+"Twiiu": {
+"exp": 156590797700,
+"level": 2112
+},
+"Kipersz": {
+"exp": 151656944906,
+"level": 2089
+},
+"Gabz Implacavel": {
+"exp": 191101598505,
+"level": 2256
+}
+}
+},
+"2026-10-08": {
+"source": "guildstats",
+"chars": {
+"Marcha Implacavel": {
+"exp": 174884016545,
+"level": 2191
+},
+"Twiiu": {
+"exp": 156831661197,
+"level": 2113
+},
+"Kipersz": {
+"exp": 151848714334,
+"level": 2090
+},
+"Gabz Implacavel": {
+"exp": 191322506237,
+"level": 2257
+}
+}
+},
+"2026-10-09": {
+"source": "guildstats",
+"chars": {
+"Marcha Implacavel": {
+"exp": 175102213896,
+"level": 2192
+},
+"Twiiu": {
+"exp": 157072073707,
+"level": 2114
+},
+"Kipersz": {
+"exp": 152032625499,
+"level": 2091
+},
+"Gabz Implacavel": {
+"exp": 191544239018,
+"level": 2258
+}
+}
+},
+"2026-10-10": {
+"source": "guildstats",
+"chars": {
+"Marcha Implacavel": {
+"exp": 175467430389,
+"level": 2193
+},
+"Twiiu": {
+"exp": 157419376641,
+"level": 2115
+},
+"Kipersz": {
+"exp": 152309021099,
+"level": 2092
+},
+"Gabz Implacavel": {
+"exp": 191803564859,
+"level": 2259
+}
+}
+},
+"2026-10-11": {
+"source": "guildstats",
+"chars": {
+"Marcha Implacavel": {
+"exp": 175669965408,
+"level": 2194
+},
+"Twiiu": {
+"exp": 156984011148,
+"level": 2113
+},
+"Kipersz": {
+"exp": 152482304723,
+"level": 2093
+},
+"Gabz Implacavel": {
+"exp": 192019925913,
+"level": 2260
+}
+}
+},
+"2026-10-12": {
+"source": "guildstats",
+"chars": {
+"Marcha Implacavel": {
+"exp": 175906983003,
+"level": 2195
+},
+"Twiiu": {
+"exp": 157208951770,
+"level": 2114
+},
+"Kipersz": {
+"exp": 152650998399,
+"level": 2094
+},
+"Gabz Implacavel": {
+"exp": 192210442488,
+"level": 2261
+}
+}
+},
+"2026-10-13": {
+"source": "guildstats",
+"chars": {
+"Marcha Implacavel": {
+"exp": 176120948081,
+"level": 2196
+},
+"Twiiu": {
+"exp": 157458814247,
+"level": 2116
+},
+"Kipersz": {
+"exp": 152845568623,
+"level": 2095
+},
+"Gabz Implacavel": {
+"exp": 192424007884,
+"level": 2262
+}
+}
+},
+"2026-10-14": {
+"source": "guildstats",
+"chars": {
+"Marcha Implacavel": {
+"exp": 176386340593,
+"level": 2197
+},
+"Twiiu": {
+"exp": 157756952909,
+"level": 2117
+},
+"Kipersz": {
+"exp": 153063185121,
+"level": 2096
+},
+"Gabz Implacavel": {
+"exp": 192686007500,
+"level": 2263
+}
+}
+},
+"2026-10-15": {
+"source": "guildstats",
+"chars": {
+"Marcha Implacavel": {
+"exp": 176607136444,
+"level": 2198
+},
+"Twiiu": {
+"exp": 157994157277,
+"level": 2118
+},
+"Kipersz": {
+"exp": 153258374745,
+"level": 2097
+},
+"Gabz Implacavel": {
+"exp": 192934136687,
+"level": 2264
+}
+}
+},
+"2026-10-16": {
+"source": "guildstats",
+"chars": {
+"Marcha Implacavel": {
+"exp": 176828590076,
+"level": 2199
+},
+"Twiiu": {
+"exp": 158241545672,
+"level": 2119
+},
+"Kipersz": {
+"exp": 153399364811,
+"level": 2097
+},
+"Gabz Implacavel": {
+"exp": 192301859664,
+"level": 2261
+}
+}
+},
+"2026-10-17": {
+"source": "guildstats",
+"chars": {
 "Marcha Implacavel": {
 "exp": 177105395456,
 "level": 2200,
@@ -674,10 +899,16 @@
 "skill": 134
 },
 "Kipersz": {
-"exp": 153549902923,
+"exp": 153548207347,
 "level": 2098,
 "skill": 132
+},
+"Gabz Implacavel": {
+"exp": 192551430213,
+"level": 2262,
+"skill": 139
 }
-}
+},
+"fetchedAt": "2026-10-18T19:20:00Z"
 }
 }

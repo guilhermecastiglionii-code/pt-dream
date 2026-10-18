@@ -68,7 +68,8 @@ def page(world, cat, n):
 
 
 def main():
-    today = (datetime.now(timezone.utc) - timedelta(hours=3)).strftime("%Y-%m-%d")
+    # dia do jogo: a leitura feita depois do server save traz a XP do dia anterior
+    today = (datetime.now(timezone.utc) - timedelta(hours=9) - timedelta(days=1)).strftime("%Y-%m-%d")
     cfg = load_config()
     pt_world = cfg.get("world") or "Collabra"
     worlds = [w for w in (cfg.get("worlds") or []) if w]

@@ -311,6 +311,8 @@ const dayMs=864e5, toDate=s=>new Date(s+"T12:00:00"), iso=d=>d.toISOString().sli
 const diffDays=(a,b)=>Math.round((toDate(b)-toDate(a))/dayMs);
 const first=n=>n.split(" ")[0];
 function todayBR(){return new Date(Date.now()-3*3600e3).toISOString().slice(0,10)}
+/* dia do jogo: a leitura feita depois do server save traz a XP do dia anterior */
+function gameDay(){const d=new Date(Date.now()-9*3600e3-dayMs);return d.toISOString().slice(0,10)}
 
 /* abas */
 const TABS=["painel","ranking","metas","boost","vendas","ajustes"];
@@ -364,24 +366,28 @@ function renderRanking(){
   const box=$("rk3");if(!box)return;syncWorldSel();const W=S.rkWorld||ptWorld();const docs=S.srv[W]||[];const n=docs.length,L=docs[n-1];
   $("rkWorldT").textContent=W;
   $("rkInfo").textContent=L?`top ${String(L.raw).trim().split(/\n/).length} do highscore · leitura de ${d2(L.date)}`:"";
-  if(!n){box.innerHTML=`<div class="win" style="grid-column:1/-1"><div class="rk-empty">Ainda não há leitura de ${esc(W)}. A primeira entra na próxima atualização (7h12 ou 13h12).</div></div>`;return}
-  if(n<2){const vf=$("rkVoc").value,top=+$("rkTop").value||25,q=$("rkFind").value.trim().toLowerCase(),pt=new Set((S.cfg.chars||[]).map(c=>c.name));
+  const GS=S.gs&&S.gs[W];
+  if(!n&&!GS){box.innerHTML=`<div class="win" style="grid-column:1/-1"><div class="rk-empty">Ainda não há leitura de ${esc(W)}. A primeira entra na próxima atualização (7h12 ou 13h12).</div></div>`;return}
+  if(n<2&&!GS){const vf=$("rkVoc").value,top=+$("rkTop").value||25,q=$("rkFind").value.trim().toLowerCase(),pt=new Set((S.cfg.chars||[]).map(c=>c.name));
     let rows=[...parseServer(L).entries()].map(([name,v])=>({name,...v})).sort((a,b)=>b.exp-a.exp).filter(r=>!vf||fam(r.voc)===vf);rows.forEach((r,i)=>r.vpos=i+1);
     const shown=q?rows.filter(r=>r.name.toLowerCase().includes(q)):rows.slice(0,top);const extra=q?[]:rows.filter(r=>pt.has(r.name)&&r.vpos>top);
     const tr=r=>`<tr style="--vc:${VCOL[fam(r.voc)]}" class="${pt.has(r.name)?"pt":""} ${r.vpos<=3?"top3":""}"><td class="p">${r.vpos}</td><td class="n">${esc(r.name)}<span class="vc" style="color:${VCOL[fam(r.voc)]}">${VAB[r.voc]||""}</span></td><td class="num">${r.level}</td><td class="num">${fx(r.exp)}</td></tr>`;
-    const nxt=iso(new Date(toDate(L.date).getTime()+dayMs));
-    box.innerHTML=`<div class="win" style="grid-column:1/-1"><div class="rk-empty">O ranking de XP compara um dia com o outro. Por enquanto só existe a leitura de <b>${d2(L.date)}</b>; o de <b>Ontem</b> aparece em <b>${d2(nxt)}</b> depois das 7h12, o de 7 dias em <b>${d2(iso(new Date(toDate(L.date).getTime()+7*dayMs)))}</b> e o de 30 dias em <b>${d2(iso(new Date(toDate(L.date).getTime()+30*dayMs)))}</b>. Enquanto isso, veja o top level atual.</div></div>
+    const nxt=iso(new Date(toDate(L.date).getTime()+2*dayMs));
+    box.innerHTML=`<div class="win" style="grid-column:1/-1"><div class="rk-empty">O ranking de XP compara um dia com o outro. Por enquanto só existe a leitura de <b>${d2(L.date)}</b>; o de <b>Ontem</b> aparece em <b>${d2(nxt)}</b> depois das 7h12, o de 7 dias em <b>${d2(iso(new Date(toDate(L.date).getTime()+8*dayMs)))}</b> e o de 30 dias em <b>${d2(iso(new Date(toDate(L.date).getTime()+31*dayMs)))}</b>. Enquanto isso, veja o top level atual.</div></div>
     <div class="win" style="grid-column:1/-1"><div class="win-t"><h2>Top level agora</h2><span class="note">leitura de ${d2(L.date)}</span></div><div class="win-b scroll" style="padding:6px 8px"><table class="rkt"><thead><tr><th>#</th><th>Char</th><th>Lvl</th><th>XP total</th></tr></thead><tbody>
     ${shown.length?shown.map(tr).join(""):`<tr><td colspan="4" class="rk-empty">Nenhum char encontrado.</td></tr>`}${extra.length?`<tr><td colspan="4" class="note" style="text-align:center;background:var(--sunk)">Nossa PT fora do top ${top}</td></tr>`+extra.map(tr).join(""):""}</tbody></table></div></div>`;return}
   const vf=$("rkVoc").value,top=+$("rkTop").value||25,q=$("rkFind").value.trim().toLowerCase();
   const pt=new Set((S.cfg.chars||[]).map(c=>c.name));
-  const tbl=(title,days)=>{const w=serverWindow(days,docs);
+  const gsWin=k=>{if(!GS||!GS["d"+k])return null;const list=String(GS["d"+k]).trim().split(/\n/).map(l=>{const a=l.split("|");return{name:a[0],level:+a[1],gain:+a[2],voc:a[3],dl:0}}).filter(r=>r.name&&r.name!=="Name Changed");
+    return{list,from:null,to:GS.date,span:k,gs:1}};
+  const tbl=(title,days)=>{let w=serverWindow(days,docs);const g=gsWin(days);
+    if(g&&(!w||w.span<days||w.to<g.to))w=g;
     if(!w)return`<div class="win"><div class="win-t"><h2>${title}</h2></div><div class="rk-empty">Sem dados ainda.</div></div>`;
     let rows=w.list.filter(r=>!vf||fam(r.voc)===vf);rows.forEach((r,i)=>r.vpos=i+1);
     let shown=q?rows.filter(r=>r.name.toLowerCase().includes(q)):rows.slice(0,top);
     const extra=q?[]:rows.filter(r=>pt.has(r.name)&&r.vpos>top);
-    const tr=r=>{const v=VAB[r.voc]||"";return`<tr style="--vc:${VCOL[fam(r.voc)]}" class="${pt.has(r.name)?"pt":""} ${r.vpos<=3?"top3":""}"><td class="p">${r.vpos}</td><td class="n">${esc(r.name)}<span class="vc" style="color:${VCOL[fam(r.voc)]}">${v}</span></td><td class="num">${r.level}${r.dl?` <span style="color:var(--good);font-size:11px">+${r.dl}</span>`:""}</td><td class="num">${fx(r.gain)}</td></tr>`};
-    const real=days>1&&w.span<days?`<span class="note">só ${w.span} dia${w.span>1?"s":""} de dados</span>`:`<span class="note">${d2(w.from)} → ${d2(w.to)}</span>`;
+    const tr=r=>{const v=VAB[r.voc]||r.voc||"";return`<tr style="--vc:${VCOL[fam(r.voc)]}" class="${pt.has(r.name)?"pt":""} ${r.vpos<=3?"top3":""}"><td class="p">${r.vpos}</td><td class="n">${esc(r.name)}<span class="vc" style="color:${VCOL[fam(r.voc)]}">${v}</span></td><td class="num">${r.level}${r.dl?` <span style="color:var(--good);font-size:11px">+${r.dl}</span>`:""}</td><td class="num">${fx(r.gain)}</td></tr>`};
+    const real=w.gs?`<span class="note">GuildStats · até ${d2(w.to)}</span>`:days>1&&w.span<days?`<span class="note">só ${w.span} dia${w.span>1?"s":""} de dados</span>`:`<span class="note">${d2(w.from)} → ${d2(w.to)}</span>`;
     return`<div class="win"><div class="win-t"><h2>${title}</h2>${real}</div><div class="win-b scroll" style="padding:6px 8px"><table class="rkt"><thead><tr><th>#</th><th>Char</th><th>Lvl</th><th>XP</th></tr></thead><tbody>
       ${shown.length?shown.map(tr).join(""):`<tr><td colspan="4" class="rk-empty">Nenhum char encontrado.</td></tr>`}
       ${extra.length?`<tr><td colspan="4" class="note" style="text-align:center;background:var(--sunk)">Nossa PT fora do top ${top}</td></tr>`+extra.map(tr).join(""):""}</tbody></table></div></div>`};
@@ -392,6 +398,7 @@ function syncWorldSel(){const sel=$("rkWorld"),ws=worlds();if(!S.rkWorld||!ws.in
   const html=ws.map(w=>`<option${w===S.rkWorld?" selected":""}>${esc(w)}</option>`).join("");if(sel.dataset.h!==html){sel.innerHTML=html;sel.dataset.h=html}}
 async function getText(u){const r=await fetch(u+"?t="+Date.now());if(!r.ok)throw new Error(u);return r.text()}
 async function subWorld(w){if(!w||S.subs[w])return;S.subs[w]=1;
+  if(S.db){S.db.doc("gsrank/"+w).get().then(d=>{S.gs=S.gs||{};if(d.exists){S.gs[w]=d.data();render()}}).catch(()=>{})}
   try{let idx={};try{idx=S.srvIdx||(S.srvIdx=JSON.parse(await getText("data/srv/index.json")))}catch(e){}
     const fbDocs={};if(S.db){try{const q=await S.db.collection("srv/"+w+"/days").orderBy("date","desc").limit(40).get();q.docs.forEach(d=>{const v=d.data();if(v&&v.raw)fbDocs[v.date]=v})}catch(e){}}
     const ds=[...new Set([...(idx[w]||[]),...Object.keys(fbDocs)])].sort();if(!ds.length){S.srv[w]=[];render();return}
@@ -418,9 +425,8 @@ $("wList").addEventListener("click",e=>{const b=e.target.closest("button[data-w]
 $("rkFind").addEventListener("input",renderRanking);
 function renderStatus(){const L=S.snaps[S.snaps.length-1];
   if(!L){$("status").className="chip";$("status").innerHTML=`<i class="dot"></i>Sem leituras ainda`;return}
-  const age=diffDays(L.date,todayBR());$("status").className="chip "+(age<=1?"ok":age<=3?"late":"bad");
-  const at=L.fetchedAt?new Date(L.fetchedAt).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):"";
-  $("status").innerHTML=`<i class="dot"></i>${age<=0?"Atualizado hoje":age==1?"Atualizado ontem":"Sem leitura há "+age+" dias"} <b class="num">${d2(L.date)}${at?" "+at:""}</b>`}
+  const age=diffDays(L.date,gameDay());$("status").className="chip "+(age<=0?"ok":age<=2?"late":"bad");
+  $("status").innerHTML=`<i class="dot"></i>${age<=0?"Em dia":"Atrasado "+age+(age>1?" dias":" dia")} · XP até <b class="num">${d2(L.date)}</b>`}
 
 function renderPainel(stats){
   const ok=stats.filter(s=>s.last),sum=k=>ok.reduce((a,s)=>a+(s[k]?s[k].gain:0),0);
@@ -586,7 +592,7 @@ $("vendas").addEventListener("click",async e=>{const b=e.target.closest("button[
 /* atualização manual: busca o highscore direto da API e grava no Firebase */
 async function hsPage(w,cat,n){const r=await fetch(`https://api.tibiadata.com/v4/highscores/${encodeURIComponent(w)}/${cat}/all/${n}`);if(!r.ok)throw new Error("API "+r.status);const j=await r.json();return{list:(j.highscores&&j.highscores.highscore_list)||[],ts:j.information&&j.information.timestamp}}
 async function atualizarAgora(){const btn=$("syncBtn");if(btn.disabled)return;btn.disabled=true;const say=t=>btn.textContent=t;
-  try{const today=todayBR(),pw=ptWorld();let stamp=null;const rowsBy={};const ws=worlds();
+  try{const today=gameDay(),pw=ptWorld();let stamp=null;const rowsBy={};const ws=worlds();
     for(const w of ws){let rows=[];for(let n=1;n<=10;n++){say(`${w} ${n*10}%`);const p=await hsPage(w,"experience",n);stamp=stamp||p.ts;rows=rows.concat(p.list);if(p.list.length<50)break}
       if(!rows.length)continue;rowsBy[w]=rows;
       await S.db.doc(`srv/${w}/days/${today}`).set({date:today,source:"manual",fetchedAt:stamp||new Date().toISOString(),raw:rows.map(r=>`${r.rank}|${r.name}|${r.vocation}|${r.level}|${r.value}`).join("\n")})}
