@@ -134,6 +134,11 @@ button.x:hover{color:var(--bad)}
 .foot{font-size:12px;color:var(--dim);text-align:center}
 [role="tabpanel"]{display:grid;gap:12px}
 .rk-ctrl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ptbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ptbar span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-right:4px}
+.ptbtn{padding:7px 14px;font-family:var(--f-display);font-weight:700;letter-spacing:.04em}
+.ptbtn small{font-family:var(--f-num);font-weight:400;opacity:.75;margin-left:6px}
+.ptbtn[aria-pressed="true"]{background:linear-gradient(180deg,#e9c46a,#a8761f);color:#1d1406;text-shadow:none}
 .rkt tr.pt td{background:color-mix(in srgb,var(--vc) 24%,transparent)!important}
 .rkt tr.pt td.n{color:#fff;font-weight:700}
 .wl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -239,7 +244,7 @@ h1{font-size:clamp(28px,4.5vw,40px);text-shadow:2px 2px 0 #000,0 0 22px rgba(227
   <div class="top">
     <div class="brand">
       <svg class="crest" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3 42 10v14c0 11-8 18-18 21C14 42 6 35 6 24V10z" fill="#1d1914" stroke="#e3b75a" stroke-width="2"/><path d="M24 11l3.2 7.4 8 .6-6.1 5.2 1.9 7.8L24 27.8 17 32l1.9-7.8-6.1-5.2 8-.6z" fill="#e3b75a"/></svg>
-      <div><h1>PT Dream</h1><div class="world">Mundo Collabra · PT de 4</div></div>
+      <div><h1>PT Dream</h1><div class="world" id="worldSub">Mundo Collabra</div></div>
     </div>
     <div class="live">
       <span class="chip" id="status"><i class="dot"></i>Carregando…</span>
@@ -260,6 +265,7 @@ h1{font-size:clamp(28px,4.5vw,40px);text-shadow:2px 2px 0 #000,0 0 22px rgba(227
 
   <!-- PAINEL -->
   <div role="tabpanel" id="p-painel" aria-labelledby="t-painel">
+    <div class="ptbar" id="ptBar" role="group" aria-label="Escolher PT"></div>
     <div class="kpis" id="kpis"></div>
     <div class="chars" id="chars"><div class="win empty">Os personagens aparecem aqui assim que os dados carregarem.</div></div>
     <div class="ov">
@@ -341,6 +347,7 @@ h1{font-size:clamp(28px,4.5vw,40px);text-shadow:2px 2px 0 #000,0 0 22px rgba(227
         <label for="nSkill">Skill principal<select id="nSkill"></select></label>
         <label for="nMeta">Level alvo<input id="nMeta" type="number" step="10" placeholder="2200"></label>
         <label for="nBirth">Aniversário (dd/mm)<input id="nBirth" type="text" placeholder="15/10"></label>
+        <label for="nPt">PT<input id="nPt" list="ptList" placeholder="PT Dream"></label><datalist id="ptList" class="ptlist"></datalist>
         <label style="align-self:end"><button type="submit">Adicionar</button></label>
       </form>
       <p class="note" style="margin:0;padding:0 14px 14px">O char precisa estar no top 1000 de level do Collabra. Se ele estiver no top 300, os dados aparecem na hora. Se não, entram na próxima atualização (7h12 ou 13h12).</p></div>
@@ -419,7 +426,16 @@ function charStats(c){const ser=series(c.name),last=ser[ser.length-1]||null,prev
   return st}
 
 /* render */
-function render(){if(!S.cfg)return;renderWorlds();renderAdmins();const stats=S.cfg.chars.map(charStats);renderStatus();renderPainel(stats);renderRanking();renderMetas(stats);renderCalc();renderVendas();renderAjustes()}
+const ptOf=c=>(c.pt||"PT Dream").trim()||"PT Dream";
+function ptList(){return [...new Set((S.cfg.chars||[]).map(ptOf))]}
+function selChars(){const l=ptList();if(S.ptSel!=="Todas"&&!l.includes(S.ptSel))S.ptSel=l[0]||"Todas";return (S.cfg.chars||[]).filter(c=>S.ptSel==="Todas"||ptOf(c)===S.ptSel)}
+try{S.ptSel=localStorage.getItem("ptSel")}catch(e){}
+function renderPtBar(){const l=ptList();selChars();const opts=l.length>1?[...l,"Todas"]:l;
+  $("ptBar").innerHTML=`<span>PT</span>`+opts.map(n=>{const k=n==="Todas"?(S.cfg.chars||[]).length:(S.cfg.chars||[]).filter(c=>ptOf(c)===n).length;return`<button type="button" class="ptbtn" data-pt="${esc(n)}" aria-pressed="${n===S.ptSel}">${esc(n)}<small>${k}</small></button>`}).join("");
+  $("worldSub").textContent=`Mundo ${ptWorld()} · ${S.ptSel==="Todas"?"todas as PTs":S.ptSel}`;
+  document.querySelectorAll(".ptlist").forEach(d=>d.innerHTML=l.map(n=>`<option value="${esc(n)}">`).join(""))}
+$("ptBar").addEventListener("click",e=>{const b=e.target.closest("button[data-pt]");if(!b)return;S.ptSel=b.dataset.pt;try{localStorage.setItem("ptSel",S.ptSel)}catch(x){}render()});
+function render(){if(!S.cfg)return;renderWorlds();renderAdmins();renderPtBar();const stats=selChars().map(charStats);renderStatus();renderPainel(stats);renderRanking();renderMetas(stats);renderCalc();renderVendas();renderAjustes()}
 
 /* ranking do servidor */
 const VAB={"Royal Paladin":"RP","Paladin":"P","Elder Druid":"ED","Druid":"D","Master Sorcerer":"MS","Sorcerer":"S","Elite Knight":"EK","Knight":"K","Exalted Monk":"EM","Monk":"M","None":"N"};
@@ -507,8 +523,8 @@ function renderPainel(stats){
   const avgL=ok.length?ok.reduce((a,s)=>a+s.last.level,0)/ok.length:0;
   const o0=ok[0]&&ok[0].ontem,span=o0?o0.span:1;
   $("kpis").innerHTML=[
-    [span>1?`XP da PT desde ${d2(o0.from)}`:"XP da PT ontem",fx(sum("ontem")),span>1?`${span} dias sem leitura no meio`:"soma dos 4 chars"],
-    ["XP da PT em 30 dias",fx(sum("d30")),"soma dos 4 chars"],
+    [span>1?`XP da PT desde ${d2(o0.from)}`:"XP da PT ontem",fx(sum("ontem")),span>1?`${span} dias sem leitura no meio`:`soma dos ${ok.length} chars`],
+    ["XP da PT em 30 dias",fx(sum("d30")),`soma dos ${ok.length} chars`],
     ["Mais XP no último dia",top?first(top.c.name):"–",top?fx(top.ontem.gain):""],
     ["Level médio",avgL?avgL.toLocaleString("pt-BR",{maximumFractionDigits:0}):"–",near?`${first(near.c.name)} é o mais perto da meta`:""]
   ].map(([l,v,s])=>`<div class="win kpi"><span>${l}</span><b class="num">${v}</b><small>${esc(s)}</small></div>`).join("");
@@ -608,8 +624,8 @@ function renderVendas(){const div=+S.cfg.divisao||4,tx=S.cfg.taxaMkt??0.02;
 
 function renderAjustes(){if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest("#ajustes"))return;
   const dis=S.canWrite?"":"disabled";
-  let h=`<thead><tr><th>Char</th><th>Voc</th><th>Skill</th><th>Level alvo</th><th>Aniversário (dd/mm)</th><th></th></tr></thead><tbody>`;
-  S.cfg.chars.forEach((c,i)=>{const sk=(SKDEF[c.voc]||Object.keys(SKILLS));h+=`<tr><td>${esc(c.name)}</td><td style="color:${VC[c.voc]||"var(--gold)"}">${esc(c.voc)}</td>
+  let h=`<thead><tr><th>Char</th><th>PT</th><th>Voc</th><th>Skill</th><th>Level alvo</th><th>Aniversário (dd/mm)</th><th></th></tr></thead><tbody>`;
+  S.cfg.chars.forEach((c,i)=>{const sk=(SKDEF[c.voc]||Object.keys(SKILLS));h+=`<tr><td>${esc(c.name)}</td><td><input id="aj-pt-${i}" data-i="${i}" data-k="pt" list="ptList" value="${esc(ptOf(c))}" style="width:130px" ${dis}></td><td style="color:${VC[c.voc]||"var(--gold)"}">${esc(c.voc)}</td>
     <td><select id="aj-skill-${i}" data-i="${i}" data-k="skillCat" style="width:130px" ${dis}>${sk.map(k=>`<option value="${k}"${k===c.skillCat?" selected":""}>${SKILLS[k]}</option>`).join("")}</select></td>
     <td><input id="aj-meta-${i}" data-i="${i}" data-k="meta" type="number" step="10" value="${c.meta||""}" style="width:100px" ${dis}></td>
     <td><input id="aj-birth-${i}" data-i="${i}" data-k="birth" type="text" placeholder="15/10" value="${c.birth?c.birth.split("-").reverse().join("/"):""}" style="width:100px" ${dis}></td>
@@ -624,7 +640,7 @@ $("addChar").addEventListener("submit",e=>{e.preventDefault();if(!S.cfg||!S.canW
   const name=$("nName").value.trim().replace(/\s+/g," ");if(!name)return;
   if(S.cfg.chars.some(c=>c.name.toLowerCase()===name.toLowerCase())){$("addNote").textContent="Esse char já está na PT.";return}
   const voc=$("nVoc").value,cat=$("nSkill").value;
-  const chars=JSON.parse(JSON.stringify(S.cfg.chars));chars.push({name,voc,skillCat:cat,skillName:SKILLS[cat],skill:null,meta:+$("nMeta").value||null,birth:parseBirth($("nBirth").value)});
+  const chars=JSON.parse(JSON.stringify(S.cfg.chars));chars.push({name,voc,skillCat:cat,skillName:SKILLS[cat],skill:null,meta:+$("nMeta").value||null,birth:parseBirth($("nBirth").value),pt:($("nPt").value.trim()||(S.ptSel!=="Todas"?S.ptSel:"PT Dream"))});
   saveCfg({chars});$("addNote").textContent=`${name} adicionado`;["nName","nMeta","nBirth"].forEach(id=>$(id).value="")});
 const rmArm={};
 $("ajustes").addEventListener("click",e=>{const b=e.target.closest("button[data-rm]");if(!b)return;const i=+b.dataset.rm;
@@ -640,6 +656,7 @@ function saveCfg(patch){Object.assign(S.cfg,patch);render();if(!S.db||!S.canWrit
 $("ajustes").addEventListener("change",e=>{const t=e.target;if(!t.dataset.k)return;const chars=JSON.parse(JSON.stringify(S.cfg.chars)),c=chars[+t.dataset.i];
   if(t.dataset.k==="meta")c.meta=+t.value||null;
   else if(t.dataset.k==="skillCat"){c.skillCat=t.value;c.skillName=SKILLS[t.value];c.skill=null}
+  else if(t.dataset.k==="pt"){c.pt=t.value.trim()||"PT Dream"}
   else c.birth=parseBirth(t.value);
   t.blur();saveCfg({chars})});
 $("vData").value=todayBR();
