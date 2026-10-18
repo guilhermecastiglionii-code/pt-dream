@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Painel da PT Dream no Tibia (Collabra): level, XP diária, metas, ranking do servidor e vendas.">
 <style>*,*::before,*::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}html{background:#0f0d0a;min-height:100%}</style>
@@ -400,7 +401,7 @@ async function getText(u){const r=await fetch(u+"?t="+Date.now());if(!r.ok)throw
 async function subWorld(w){if(!w||S.subs[w])return;S.subs[w]=1;
   if(S.db){S.db.doc("gsrank/"+w).get().then(d=>{S.gs=S.gs||{};if(d.exists){S.gs[w]=d.data();render()}}).catch(()=>{})}
   try{let idx={};try{idx=S.srvIdx||(S.srvIdx=JSON.parse(await getText("data/srv/index.json")))}catch(e){}
-    const fbDocs={};if(S.db){try{const q=await S.db.collection("srv/"+w+"/days").orderBy("date","desc").limit(40).get();q.docs.forEach(d=>{const v=d.data();if(v&&v.raw)fbDocs[v.date]=v})}catch(e){}}
+    const fbDocs={};if(S.db){try{const q=await S.db.collection("srv/"+w+"/days").orderBy("date","desc").limit(40).get();q.docs.forEach(d=>{const v=d.data();if(v&&v.raw&&v.date<=gameDay())fbDocs[v.date]=v})}catch(e){}}
     const ds=[...new Set([...(idx[w]||[]),...Object.keys(fbDocs)])].sort();if(!ds.length){S.srv[w]=[];render();return}
     const L=ds[ds.length-1],pick=new Set([L,ds[ds.length-2]]);[7,30].forEach(k=>{const t=iso(new Date(toDate(L)-k*dayMs));let b=null;ds.forEach(d=>{if(d<=t)b=d});pick.add(b||ds[0])});
     const list=[...pick].filter(Boolean).sort();const docs=await Promise.all(list.map(async d=>fbDocs[d]?{date:d,raw:fbDocs[d].raw}:({date:d,raw:await getText(`data/srv/${encodeURIComponent(w)}/${d}.txt`)})));
@@ -609,7 +610,8 @@ async function atualizarAgora(){const btn=$("syncBtn");if(btn.disabled)return;bt
 function alertRO(){const n=$("status");if(S.user&&!S.roWarned){S.roWarned=1;vendMsg("A conta "+S.user.email+" não está liberada para editar.")}}
 const FB=window.FIREBASE_CONFIG||null;
 function useSeed(seed){if(!S.cfg){S.cfg=JSON.parse(JSON.stringify(seed.config))}if(!S.fbVendas){S.vendas=Object.entries(seed.vendas||{}).map(([id,v])=>({id,...v}))}}
-function mergeSnaps(){const all={...(S.snapsRepo||{}),...(S.snapsFb||{})};S.snaps=Object.entries(all).map(([date,v])=>({date,...v})).sort((a,b)=>a.date.localeCompare(b.date))}
+function mergeSnaps(){const gd=gameDay(),all={};const add=(src,d,v)=>{if(d>gd)return;const o=all[d]||{chars:{}};all[d]={...o,...v,chars:{...o.chars,...(v.chars||{})}}};
+  Object.entries(S.snapsRepo||{}).forEach(([d,v])=>add("repo",d,v));Object.entries(S.snapsFb||{}).forEach(([d,v])=>add("fb",d,v));S.snaps=Object.entries(all).map(([date,v])=>({date,...v})).sort((a,b)=>a.date.localeCompare(b.date))}
 function updAuthUI(){const b=$("authBtn");$("syncBtn").hidden=!(S.fb&&S.user);if(!S.fb){b.hidden=true;S.canWrite=false;return}b.hidden=false;
   b.textContent=S.user?("Sair ("+(S.user.email||"").split("@")[0]+")"):"Entrar para editar";
   S.canWrite=!!S.user;const f=$("vendForm").closest(".win");if(f)f.hidden=!S.canWrite;render()}
