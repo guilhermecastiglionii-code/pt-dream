@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Quem pode editar: e-mails desta lista + os e-mails em config/main.editores
+    function isEditor() {
+      return request.auth != null && (
+        request.auth.token.email in ['guilhermecastiglionii@gmail.com'] ||
+        (exists(/databases/$(database)/documents/config/main) &&
+         request.auth.token.email in get(/databases/$(database)/documents/config/main).data.get('editores', []))
+      );
+    }
+    match /config/{doc} {
+      allow read: if true;
+      allow write: if isEditor();
+    }
+    match /vendas/{doc} {
+      allow read: if true;
+      allow write: if isEditor();
+    }
+  }
+}

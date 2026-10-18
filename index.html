@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Painel da PT Dream no Tibia (Collabra): level, XP diária, metas, ranking do servidor e vendas.">
+<style>*,*::before,*::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}html{background:#0f0d0a;min-height:100%}</style>
+<title>PT Dream Collabra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: barra de topo com status e server save, abas, e janelas no estilo do cliente do Tibia (pedra escura, borda chanfrada, título dourado). Tema escuro único, de propósito. */
+:root{
+  color-scheme:dark;
+  --bg:#0f0d0a; --stone:#1d1914; --stone-2:#262019; --sunk:#14110d;
+  --edge-hi:#5a4c39; --edge-lo:#050403; --line:#3a3125;
+  --fg:#ece3d0; --muted:#a39780; --dim:#6f6555;
+  --gold:#e3b75a; --gold-2:#b8862e; --gold-glow:rgba(227,183,90,.18);
+  --xp:#4fc46b; --xp-2:#2b8a43; --hp:#d9453b; --mana:#4a86e8;
+  --good:#6fd38a; --warn:#e6b450; --bad:#ef6f5c;
+  --rp:#6fd38a; --ed:#62b0ff; --ms:#ff8a5c; --ek:#e8c07a;
+  --f-display:"Cinzel",Georgia,serif; --f-body:"Figtree",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,monospace;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.45;
+  background-image:radial-gradient(1200px 500px at 50% -120px,rgba(227,183,90,.10),transparent 70%),
+  repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0 2px,transparent 2px 6px)}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-block:18px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:18px}
+
+/* topo */
+.top{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:14px}
+.crest{width:46px;height:46px;flex:none}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,34px);margin:0;letter-spacing:.06em;color:var(--gold);text-shadow:0 2px 0 #000,0 0 18px var(--gold-glow);line-height:1}
+.world{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-top:4px}
+.live{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:6px;font-size:12.5px;font-weight:600;background:var(--stone);border:1px solid var(--line);color:var(--muted)}
+.chip b{color:var(--fg);font-weight:600}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.chip.ok .dot{background:var(--good);box-shadow:0 0 8px var(--good)} .chip.late .dot{background:var(--warn)} .chip.bad .dot{background:var(--bad)}
+
+/* abas */
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:2px solid var(--line);scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{font:inherit;font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.05em;color:var(--muted);background:transparent;border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;padding:9px 16px;cursor:pointer;white-space:nowrap;margin-bottom:-2px}
+.tab:hover{color:var(--fg)}
+.tab[aria-selected="true"]{color:var(--gold);background:var(--stone);border-color:var(--line);border-bottom:2px solid var(--stone)}
+.tab:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+
+/* janela estilo Tibia */
+.win{background:linear-gradient(180deg,var(--stone-2),var(--stone));border:1px solid var(--edge-lo);box-shadow:inset 1px 1px 0 var(--edge-hi),inset -1px -1px 0 #0a0806,0 6px 18px rgba(0,0,0,.45);border-radius:4px;min-width:0}
+.win-t{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;background:linear-gradient(180deg,#2e271e,#1f1a14);border-bottom:1px solid var(--edge-lo);box-shadow:0 1px 0 var(--edge-hi);border-radius:4px 4px 0 0}
+.win-t h2,.win-t h3{margin:0;font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.08em;color:var(--gold);text-transform:uppercase}
+.win-t .note{font-size:12px}
+.win-b{padding:14px}
+.note{font-size:12.5px;color:var(--muted)}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{padding:12px 14px;display:grid;gap:3px}
+.kpi span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.kpi b{font-size:24px;color:var(--fg);font-weight:700}
+.kpi small{font-size:12px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* chars */
+.chars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.char .win-t{border-top:2px solid var(--vc)}
+.char .win-t h3{color:var(--fg);text-transform:none;letter-spacing:.02em;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.voc{font-family:var(--f-mono);font-size:11px;font-weight:700;color:var(--vc);border:1px solid var(--vc);border-radius:3px;padding:1px 6px;flex:none}
+.hero{display:flex;align-items:center;gap:12px}
+.emb{width:48px;height:48px;flex:none;border-radius:6px;background:var(--sunk);border:1px solid var(--line);display:grid;place-items:center;color:var(--vc)}
+.emb svg{width:30px;height:30px}
+.lvlbox{display:grid;gap:0;min-width:0}
+.lvlbox small{font-size:11px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.lvlbox b{font-family:var(--f-display);font-weight:800;font-size:32px;color:var(--gold);line-height:1.05;text-shadow:0 2px 0 #000}
+.lvlbox em{font-style:normal;font-size:12px;color:var(--good);font-weight:600}
+.xpbar{position:relative;height:14px;background:#0a0907;border:1px solid #000;box-shadow:inset 0 1px 2px #000,0 1px 0 var(--edge-hi);border-radius:2px;overflow:hidden;margin-top:12px}
+.xpbar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(180deg,#7be38f,var(--xp) 45%,var(--xp-2))}
+.xpbar span{position:relative;display:block;text-align:center;font-family:var(--f-mono);font-size:10px;line-height:14px;color:#fff;text-shadow:0 1px 1px #000,0 0 2px #000}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.stat{background:var(--sunk);border:1px solid #2a241c;border-radius:4px;padding:7px 9px;min-width:0}
+.stat small{display:block;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat b{font-size:15px;font-weight:700}
+.goal{margin-top:12px;display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;padding:7px 10px;border-radius:4px;border:1px solid}
+.goal.ok{color:var(--good);border-color:rgba(111,211,138,.35);background:rgba(111,211,138,.08)}
+.goal.mid{color:var(--warn);border-color:rgba(230,180,80,.35);background:rgba(230,180,80,.08)}
+.goal.bad{color:var(--bad);border-color:rgba(239,111,92,.35);background:rgba(239,111,92,.08)}
+.bday{margin-top:8px;font-size:12px;color:var(--muted)}
+
+/* ranking */
+.rank{display:grid;gap:10px}
+.rk{display:grid;grid-template-columns:22px 110px minmax(0,1fr) 72px;gap:10px;align-items:center;font-size:13px}
+.rk .pos{font-family:var(--f-display);font-weight:800;color:var(--gold);text-align:center}
+.rk .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk .tr{height:10px;background:#0a0907;border:1px solid #000;border-radius:2px;overflow:hidden}
+.rk .tr i{display:block;height:100%;background:var(--vc)}
+.rk .v{text-align:right}
+.ov{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:12px}
+
+/* tabelas */
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 10px;border-bottom:1px solid #2c261d;text-align:right;white-space:nowrap}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold-2);font-weight:700;background:var(--sunk)}
+th:first-child,td:first-child{text-align:left}
+tbody tr:hover td{background:rgba(227,183,90,.04)}
+td.done{color:var(--dim)} td.hot{color:var(--good);font-weight:700} td.cold{color:var(--warn)}
+tr.total td{font-weight:700;color:var(--gold);border-bottom:none;background:var(--sunk)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:3px;border-radius:2px;background:var(--c)}
+svg.chart text{fill:var(--dim);font-family:var(--f-mono);font-size:10px}
+
+/* forms */
+.form{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+label{display:grid;gap:4px;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+input,select{font:inherit;font-size:14px;text-transform:none;letter-spacing:0;font-weight:500;color:var(--fg);background:#0c0a08;border:1px solid #000;box-shadow:inset 0 1px 2px #000,0 1px 0 var(--edge-hi);border-radius:3px;padding:7px 9px;min-width:0;width:100%;box-sizing:border-box}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+input:disabled{opacity:.6}
+button{font:inherit;font-size:13px;font-weight:700;border-radius:3px;padding:8px 14px;cursor:pointer;color:#1a1208;border:1px solid #000;background:linear-gradient(180deg,#f0cb76,var(--gold-2));box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+button:hover{filter:brightness(1.08)}
+button.ghost{background:var(--sunk);color:var(--fg);box-shadow:inset 0 1px 0 var(--edge-hi);padding:3px 10px}
+button.x{background:transparent;border:none;box-shadow:none;color:var(--dim);padding:2px 6px;font-size:17px}
+button.x:hover{color:var(--bad)}
+.sold.s{color:var(--good)} .sold.n{color:var(--muted)}
+.empty{padding:22px;text-align:center;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:12px}
+.scen{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.sc{background:var(--sunk);border:1px solid #2a241c;border-radius:4px;padding:10px;display:grid;gap:4px}
+.sc h4{margin:0;font-family:var(--f-display);font-size:13px;color:var(--gold);letter-spacing:.05em}
+.sc .big{font-size:18px;font-weight:700}
+.sc .r{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);gap:6px}
+.sc .r b{color:var(--fg);font-weight:600}
+.foot{font-size:12px;color:var(--dim);text-align:center}
+[role="tabpanel"]{display:grid;gap:12px}
+.rk-ctrl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.rkt tr.pt td{background:color-mix(in srgb,var(--vc) 24%,transparent)!important}
+.rkt tr.pt td.n{color:#fff;font-weight:700}
+.wl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.wchip{display:inline-flex;align-items:center;gap:4px;background:var(--sunk);border:1px solid var(--line);border-radius:4px;padding:3px 4px 3px 10px;font-size:13px}
+@media (max-width:1000px){.rk-ctrl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.rk3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.rkt td,.rkt th{padding:6px 8px}
+.rkt td.p{font-family:var(--f-display);font-weight:800;color:var(--gold-2);width:28px}
+.rkt tr.top3 td.p{color:var(--gold)}
+.rkt td.n{white-space:normal;overflow-wrap:anywhere;text-align:left}
+.rkt th:nth-child(2){text-align:left}
+[hidden]{display:none!important}
+.rkt tr.pt td{background:rgba(227,183,90,.10)}
+.rkt tr.pt td.n{color:var(--gold);font-weight:700}
+.vc{font-family:var(--f-mono);font-size:10px;font-weight:700;padding:0 4px;border-radius:3px;border:1px solid currentColor;margin-left:6px;vertical-align:1px}
+.rk-empty{padding:18px;text-align:center;color:var(--muted);font-size:13px}
+.ro{background:rgba(239,111,92,.08);border:1px solid rgba(239,111,92,.35);color:var(--bad);padding:8px 12px;border-radius:4px;font-size:13px}
+.ve input,.ve select{padding:5px 7px;font-size:13px}
+.ve td{padding:5px 6px}
+.ve .w-item{min-width:170px}.ve .w-n{width:64px}.ve .w-p{width:120px}.ve .w-d{width:140px}.ve .w-s{width:96px}
+.ve select.sim{color:var(--good);font-weight:700}
+.saved{color:var(--good)}
+@media (max-width:1000px){.rk3{grid-template-columns:1fr}}
+@media (max-width:560px){.rk-ctrl{grid-template-columns:1fr}}
+@media (max-width:1000px){.chars{grid-template-columns:repeat(2,minmax(0,1fr))}.ov,.grid2{grid-template-columns:1fr}.scen{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.chars{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi b{font-size:19px}.rk{grid-template-columns:20px 80px minmax(0,1fr) 62px}}
+@media (prefers-reduced-motion:no-preference){.xpbar i,.rk .tr i{transition:width .7s ease}}
+</style>
+
+</head><body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <svg class="crest" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3 42 10v14c0 11-8 18-18 21C14 42 6 35 6 24V10z" fill="#1d1914" stroke="#e3b75a" stroke-width="2"/><path d="M24 11l3.2 7.4 8 .6-6.1 5.2 1.9 7.8L24 27.8 17 32l1.9-7.8-6.1-5.2 8-.6z" fill="#e3b75a"/></svg>
+      <div><h1>PT Dream</h1><div class="world">Mundo Collabra · PT de 4</div></div>
+    </div>
+    <div class="live">
+      <span class="chip" id="status"><i class="dot"></i>Carregando…</span>
+      <span class="chip" id="ss"><i class="dot" style="background:var(--gold)"></i>Server save</span>
+      <button class="ghost" id="authBtn" type="button" hidden style="padding:6px 11px">Entrar para editar</button>
+    </div>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Seções">
+    <button class="tab" role="tab" id="t-painel" aria-controls="p-painel" aria-selected="true">Painel</button>
+    <button class="tab" role="tab" id="t-ranking" aria-controls="p-ranking" aria-selected="false">Ranking</button>
+    <button class="tab" role="tab" id="t-metas" aria-controls="p-metas" aria-selected="false">Metas</button>
+    <button class="tab" role="tab" id="t-boost" aria-controls="p-boost" aria-selected="false">Boost e TC</button>
+    <button class="tab" role="tab" id="t-vendas" aria-controls="p-vendas" aria-selected="false">Vendas</button>
+    <button class="tab" role="tab" id="t-ajustes" aria-controls="p-ajustes" aria-selected="false">Ajustes</button>
+  </div>
+
+  <!-- PAINEL -->
+  <div role="tabpanel" id="p-painel" aria-labelledby="t-painel">
+    <div class="kpis" id="kpis"></div>
+    <div class="chars" id="chars"><div class="win empty">Os personagens aparecem aqui assim que os dados carregarem.</div></div>
+    <div class="ov">
+      <div class="win"><div class="win-t"><h2>XP por dia</h2><div class="legend" id="legend"></div></div><div class="win-b scroll" id="chart"></div></div>
+      <div class="win"><div class="win-t"><h2>Ranking do último dia</h2><span class="note" id="rankNote"></span></div><div class="win-b rank" id="rank"></div></div>
+    </div>
+  </div>
+
+  <!-- RANKING -->
+  <div role="tabpanel" id="p-ranking" aria-labelledby="t-ranking" hidden>
+    <div class="win"><div class="win-t"><h2>Ranking de XP <span id="rkWorldT">Collabra</span></h2><span class="note" id="rkInfo"></span></div>
+      <div class="win-b rk-ctrl">
+        <label for="rkWorld">Servidor<select id="rkWorld"><option>Collabra</option></select></label>
+        <label for="rkVoc">Vocação<select id="rkVoc"><option value="">Todas</option><option value="P">Paladin</option><option value="D">Druid</option><option value="S">Sorcerer</option><option value="K">Knight</option><option value="M">Monk</option></select></label>
+        <label for="rkTop">Mostrar<select id="rkTop"><option value="25">Top 25</option><option value="50">Top 50</option><option value="100">Top 100</option><option value="250">Top 250</option><option value="500">Todos (500)</option></select></label>
+        <label for="rkFind">Buscar char<input id="rkFind" type="text" placeholder="Nome do char"></label>
+      </div></div>
+    <div class="rk3" id="rk3"></div>
+  </div>
+
+  <!-- METAS -->
+  <div role="tabpanel" id="p-metas" aria-labelledby="t-metas" hidden>
+    <div class="win"><div class="win-t"><h2>XP por dia até <span id="fimLabel">31/12</span></h2><span class="note" id="diasRest"></span></div>
+      <div class="win-b"><p class="note" style="margin:0 0 10px">Quanto cada um precisa fazer por dia para chegar no level até o fim do ano. <span style="color:var(--good)">Verde</span> = o ritmo dos últimos 30 dias já dá. <span style="color:var(--warn)">Amarelo</span> = precisa acelerar.</p>
+      <div class="scroll"><table id="metas"></table></div></div></div>
+  </div>
+
+  <!-- BOOST -->
+  <div role="tabpanel" id="p-boost" aria-labelledby="t-boost" hidden>
+    <div class="win"><div class="win-t"><h2>Hunt de 3 horas por dia</h2><span class="note" id="calcNote"></span></div>
+      <div class="win-b"><div class="scen" id="scen"></div></div></div>
+    <div class="win"><div class="win-t"><h2>Valores usados</h2><span class="note">Sem boost 1,5× e com boost 2,25× o XP/h base</span></div>
+      <div class="win-b form">
+        <label for="cBase">XP/h base<input id="cBase" type="number" step="100000"></label>
+        <label for="cPac">TC por pacote<input id="cPac" type="number"></label>
+        <label for="cReais">Preço pacote R$<input id="cReais" type="number" step="0.01"></label>
+        <label for="cB1">TC boost 1ª h<input id="cB1" type="number"></label>
+        <label for="cB2">TC boost 2ª h<input id="cB2" type="number"></label>
+        <label for="cB3">TC boost 3ª h<input id="cB3" type="number"></label>
+      </div></div>
+  </div>
+
+  <!-- VENDAS -->
+  <div role="tabpanel" id="p-vendas" aria-labelledby="t-vendas" hidden>
+    <div class="kpis" id="vkpis"></div>
+    <div class="win"><div class="win-t"><h2>Lançar item</h2></div>
+      <form id="vendForm" class="win-b form">
+        <label for="vData">Data<input id="vData" type="date"></label>
+        <label for="vItem">Item<input id="vItem" type="text" placeholder="Sanguine Bow" required></label>
+        <label for="vQtd">Qtd<input id="vQtd" type="number" min="1" value="1"></label>
+        <label for="vPreco">Preço un. (gp)<input id="vPreco" type="number" min="0" step="100000" placeholder="7000000"></label>
+        <label for="vOrig">Origem<select id="vOrig"><option>Drop</option><option>Covet</option><option>Plunder</option><option>Desaire</option></select></label>
+        <label for="vSold">Vendido<select id="vSold"><option>Não</option><option>Sim</option></select></label>
+        <label style="align-self:end"><button type="submit">Adicionar</button></label>
+      </form></div>
+    <div class="ro" id="vendRO" hidden>Você está só vendo. Para editar, clique em <b>Entrar para editar</b> no topo com uma conta Google liberada pelo Gabz.</div>
+    <div class="win"><div class="win-t"><h2>Itens</h2><span class="note" id="vendNote"></span></div><div class="win-b scroll"><table id="vendas" class="ve"></table></div></div>
+  </div>
+
+  <!-- AJUSTES -->
+  <div role="tabpanel" id="p-ajustes" aria-labelledby="t-ajustes" hidden>
+    <div class="win"><div class="win-t"><h2>Personagens da PT</h2><span class="note">Salva para todos da PT</span></div><div class="win-b scroll"><table id="ajustes"></table></div></div>
+    <div class="win"><div class="win-t"><h2>Servidores no ranking</h2><span class="note" id="wNote">até 5 servidores</span></div>
+      <div class="win-b" style="display:grid;gap:10px">
+        <div class="wl" id="wList"></div>
+        <form id="addWorld" class="wl"><label for="wName" style="flex:1;min-width:180px">Adicionar servidor<input id="wName" type="text" placeholder="Ex.: Antica, Belobra, Inabra"></label><button type="submit" style="align-self:end">Adicionar</button></form>
+        <p class="note" style="margin:0">A tarefa diária grava o top 500 de cada servidor da lista. Servidor novo começa a ter ranking no dia seguinte.</p>
+      </div></div>
+    <div class="win" id="addCharWin"><div class="win-t"><h2>Adicionar personagem</h2><span class="note" id="addNote"></span></div>
+      <form id="addChar" class="win-b form">
+        <label for="nName">Nome exato do char<input id="nName" type="text" placeholder="Nome igual no Tibia" required></label>
+        <label for="nVoc">Vocação<select id="nVoc"><option value="RP">Royal Paladin</option><option value="ED">Elder Druid</option><option value="MS">Master Sorcerer</option><option value="EK">Elite Knight</option><option value="EM">Exalted Monk</option></select></label>
+        <label for="nSkill">Skill principal<select id="nSkill"></select></label>
+        <label for="nMeta">Level alvo<input id="nMeta" type="number" step="10" placeholder="2200"></label>
+        <label for="nBirth">Aniversário (dd/mm)<input id="nBirth" type="text" placeholder="15/10"></label>
+        <label style="align-self:end"><button type="submit">Adicionar</button></label>
+      </form>
+      <p class="note" style="margin:0;padding:0 14px 14px">O char precisa estar no top 1000 de level do Collabra. Se ele estiver no top 300, os dados aparecem na hora. Se não, entram na próxima atualização (7h12 ou 13h12).</p></div>
+  </div>
+
+  <p class="foot">Level e XP do highscore oficial (TibiaData), lidos todo dia às 7h depois do server save. Dados de 06/09 a 05/10 vieram da planilha (GuildStats).</p>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+(function(){
+const VC={RP:"var(--rp)",ED:"var(--ed)",MS:"var(--ms)",EK:"var(--ek)",EM:"#c79bff"};
+const VNAME={RP:"Royal Paladin",ED:"Elder Druid",MS:"Master Sorcerer",EK:"Elite Knight",EM:"Exalted Monk"};
+const SKILLS={distancefighting:"Distance",magiclevel:"Magic Level",swordfighting:"Sword",axefighting:"Axe",clubfighting:"Club",fistfighting:"Fist",shielding:"Shielding"};
+const SKDEF={RP:["distancefighting"],ED:["magiclevel"],MS:["magiclevel"],EK:["swordfighting","axefighting","clubfighting","shielding"],EM:["fistfighting","magiclevel"]};
+const EMB={
+ RP:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 4c9 4 9 20 0 24"/><path d="M9 4v24"/><path d="M5 16h22"/><path d="M23 12l4 4-4 4"/></svg>',
+ ED:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 29 22 7"/><circle cx="23" cy="6" r="3" fill="currentColor"/><path d="M14 20c-5-1-7-5-6-9 4 0 7 3 7 7"/></svg>',
+ MS:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M16 3c2 6 8 8 8 15a8 8 0 0 1-16 0c0-4 2-6 3-8 1 3 2 4 4 4-1-4-1-7 1-11z"/></svg>',
+ EK:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M24 4h4v4L13 23l-4-4z"/><path d="M7 17l8 8"/><path d="M9 23l-5 5"/></svg>',
+ EM:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M9 14v-3a2 2 0 0 1 4 0v2-4a2 2 0 0 1 4 0v4-3a2 2 0 0 1 4 0v4-1a2 2 0 0 1 4 0v6a9 9 0 0 1-9 9h-1a8 8 0 0 1-7-4l-3-5a2 2 0 0 1 3-2l1 1"/></svg>'};
+const S={cfg:null,snaps:[],vendas:[],srv:{},subs:{},rkWorld:null,db:null,canWrite:true};
+const ptWorld=()=>(S.cfg&&S.cfg.world)||"Collabra";
+const worlds=()=>{const w=(S.cfg&&S.cfg.worlds&&S.cfg.worlds.length)?S.cfg.worlds:[ptWorld()];return w.includes(ptWorld())?w:[ptWorld(),...w]};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const expFor=L=>Math.round(50/3*(L**3-6*L**2+17*L-12));
+function fx(n){ if(n==null||isNaN(n))return "–"; const a=Math.abs(n),s=n<0?"-":"";
+  if(a>=1e9)return s+(a/1e9).toLocaleString("pt-BR",{maximumFractionDigits:2})+" bi";
+  if(a>=1e6)return s+(a/1e6).toLocaleString("pt-BR",{maximumFractionDigits:a>=1e8?0:1})+" kk";
+  if(a>=1e3)return s+(a/1e3).toLocaleString("pt-BR",{maximumFractionDigits:0})+" k";
+  return s+Math.round(a).toLocaleString("pt-BR"); }
+const nf=n=>Math.round(n).toLocaleString("pt-BR");
+const brl=n=>n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const d2=s=>{const p=s.split("-");return p[2]+"/"+p[1]};
+const dayMs=864e5, toDate=s=>new Date(s+"T12:00:00"), iso=d=>d.toISOString().slice(0,10);
+const diffDays=(a,b)=>Math.round((toDate(b)-toDate(a))/dayMs);
+const first=n=>n.split(" ")[0];
+function todayBR(){return new Date(Date.now()-3*3600e3).toISOString().slice(0,10)}
+
+/* abas */
+const TABS=["painel","ranking","metas","boost","vendas","ajustes"];
+function showTab(t){if(!TABS.includes(t))t="painel";TABS.forEach(x=>{$("t-"+x).setAttribute("aria-selected",x===t);$("p-"+x).hidden=x!==t});try{localStorage.setItem("ptTab",t)}catch(e){}}
+TABS.forEach(x=>$("t-"+x).addEventListener("click",()=>showTab(x)));
+$("t-painel").parentElement.addEventListener("keydown",e=>{if(e.key!=="ArrowRight"&&e.key!=="ArrowLeft")return;const i=TABS.findIndex(x=>$("t-"+x).getAttribute("aria-selected")==="true");const n=TABS[(i+(e.key==="ArrowRight"?1:TABS.length-1))%TABS.length];showTab(n);$("t-"+n).focus()});
+let t0=(location.hash||"").slice(1);if(!TABS.includes(t0)){try{t0=localStorage.getItem("ptTab")}catch(e){}}showTab(t0);
+
+/* server save: 10:00 horário de Berlim */
+function nextSS(){const now=new Date();const p={};new Intl.DateTimeFormat("en-US",{timeZone:"Europe/Berlin",hour12:false,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"}).formatToParts(now).forEach(x=>p[x.type]=x.value);
+  const wall=Date.UTC(+p.year,+p.month-1,+p.day,+p.hour%24,+p.minute,+p.second);const off=wall-now.getTime();
+  let tgt=Date.UTC(+p.year,+p.month-1,+p.day,10,0,0);if(wall>=tgt)tgt+=dayMs;return new Date(tgt-off)}
+function tickSS(){try{const t=nextSS(),m=Math.max(0,Math.round((t-Date.now())/6e4));
+  $("ss").innerHTML=`<i class="dot" style="background:var(--gold)"></i>Server save em <b class="num">${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}min</b> <span>(${t.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})})</span>`}catch(e){$("ss").hidden=true}}
+tickSS();setInterval(tickSS,30000);
+
+/* cálculos */
+function series(name){const m=new Map();
+  (S.srv[ptWorld()]||[]).forEach(d=>{const v=parseServer(d).get(name);if(v)m.set(d.date,{date:d.date,exp:v.exp,level:v.level})});
+  S.snaps.forEach(s=>{const c=s.chars&&s.chars[name];if(c&&c.exp)m.set(s.date,{date:s.date,...c})});
+  return [...m.values()].sort((a,b)=>a.date.localeCompare(b.date))}
+function atOrBefore(ser,date){let r=null;for(const p of ser){if(p.date<=date)r=p;else break}return r}
+function gainOver(ser,days){if(ser.length<2)return null;const last=ser[ser.length-1];const target=iso(new Date(toDate(last.date)-days*dayMs));
+  const base=atOrBefore(ser,target)||ser[0];if(base===last)return null;return{gain:last.exp-base.exp,span:diffDays(base.date,last.date),from:base.date,lvl:last.level-base.level}}
+function charStats(c){const ser=series(c.name),last=ser[ser.length-1]||null,prev=ser[ser.length-2]||null,st={c,ser,last};if(!last)return st;
+  st.ontem=prev?{gain:last.exp-prev.exp,span:diffDays(prev.date,last.date),from:prev.date}:null;
+  st.d7=gainOver(ser,7);st.d30=gainOver(ser,30);st.avg=st.d30&&st.d30.span?st.d30.gain/st.d30.span:null;
+  const lo=expFor(last.level),hi=expFor(last.level+1);st.pct=Math.max(0,Math.min(100,(last.exp-lo)/(hi-lo)*100));st.toNext=hi-last.exp;
+  st.meta=+c.meta||0;if(st.meta){st.falta=expFor(st.meta)-last.exp;st.diasMeta=st.falta<=0?0:(st.avg>0?st.falta/st.avg:null)}
+  {const ws=[...ser].reverse().find(p=>p.skill!=null);st.skill=ws?ws.skill:c.skill;}
+  if(c.birth){const t=todayBR(),y=+t.slice(0,4);let b=y+"-"+c.birth;if(b<t)b=(y+1)+"-"+c.birth;st.birth=diffDays(t,b)}
+  return st}
+
+/* render */
+function render(){if(!S.cfg)return;renderWorlds();const stats=S.cfg.chars.map(charStats);renderStatus();renderPainel(stats);renderRanking();renderMetas(stats);renderCalc();renderVendas();renderAjustes()}
+
+/* ranking do servidor */
+const VAB={"Royal Paladin":"RP","Paladin":"P","Elder Druid":"ED","Druid":"D","Master Sorcerer":"MS","Sorcerer":"S","Elite Knight":"EK","Knight":"K","Exalted Monk":"EM","Monk":"M","None":"N"};
+const VCOL={P:"var(--rp)",D:"var(--ed)",S:"var(--ms)",K:"var(--ek)",M:"#c79bff",N:"var(--muted)"};
+const fam=v=>{const a=VAB[v]||v||"N";return a.slice(-1)};
+const parsed=new WeakMap();
+function parseServer(doc){if(parsed.has(doc))return parsed.get(doc);const m=new Map();
+  String(doc.raw||"").split(/\r?\n/).forEach(l=>{const p=l.split("|");if(p.length<5)return;const exp=+String(p[4]).replace(/\D/g,"");if(!exp||p[1]==="Name Changed")return;
+    m.set(p[1].trim(),{voc:p[2].trim(),level:+p[3],exp})});parsed.set(doc,m);return m}
+function serverWindow(days,docs){if(!docs||docs.length<2)return null;const L=docs[docs.length-1];let base=null;
+  if(days===1)base=docs[docs.length-2];else{const t=iso(new Date(toDate(L.date)-days*dayMs));for(const d of docs){if(d.date<=t)base=d}if(!base)base=docs[0]}
+  if(base===L)return null;const a=parseServer(base),b=parseServer(L),out=[];
+  b.forEach((v,n)=>{const o=a.get(n);if(o)out.push({name:n,voc:v.voc,level:v.level,dl:v.level-o.level,gain:v.exp-o.exp})});
+  out.sort((x,y)=>y.gain-x.gain);out.forEach((r,i)=>r.pos=i+1);return{list:out,from:base.date,to:L.date,span:diffDays(base.date,L.date)}}
+function renderRanking(){
+  const box=$("rk3");if(!box)return;syncWorldSel();const W=S.rkWorld||ptWorld();const docs=S.srv[W]||[];const n=docs.length,L=docs[n-1];
+  $("rkWorldT").textContent=W;
+  $("rkInfo").textContent=L?`top ${String(L.raw).trim().split(/\n/).length} do highscore · leitura de ${d2(L.date)}`:"";
+  if(!n){box.innerHTML=`<div class="win" style="grid-column:1/-1"><div class="rk-empty">Ainda não há leitura de ${esc(W)}. A primeira entra na próxima atualização (7h12 ou 13h12).</div></div>`;return}
+  if(n<2){box.innerHTML=`<div class="win" style="grid-column:1/-1"><div class="rk-empty">A primeira leitura do servidor foi feita em ${L?d2(L.date):"–"}. O ranking do dia aparece depois da próxima leitura (amanhã, 7h12). O de 7 dias e o de 30 dias vão se completando com o tempo.</div></div>`;return}
+  const vf=$("rkVoc").value,top=+$("rkTop").value||25,q=$("rkFind").value.trim().toLowerCase();
+  const pt=new Set((S.cfg.chars||[]).map(c=>c.name));
+  const tbl=(title,days)=>{const w=serverWindow(days,docs);
+    if(!w)return`<div class="win"><div class="win-t"><h2>${title}</h2></div><div class="rk-empty">Sem dados ainda.</div></div>`;
+    let rows=w.list.filter(r=>!vf||fam(r.voc)===vf);rows.forEach((r,i)=>r.vpos=i+1);
+    let shown=q?rows.filter(r=>r.name.toLowerCase().includes(q)):rows.slice(0,top);
+    const extra=q?[]:rows.filter(r=>pt.has(r.name)&&r.vpos>top);
+    const tr=r=>{const v=VAB[r.voc]||"";return`<tr style="--vc:${VCOL[fam(r.voc)]}" class="${pt.has(r.name)?"pt":""} ${r.vpos<=3?"top3":""}"><td class="p">${r.vpos}</td><td class="n">${esc(r.name)}<span class="vc" style="color:${VCOL[fam(r.voc)]}">${v}</span></td><td class="num">${r.level}${r.dl?` <span style="color:var(--good);font-size:11px">+${r.dl}</span>`:""}</td><td class="num">${fx(r.gain)}</td></tr>`};
+    const real=days>1&&w.span<days?`<span class="note">só ${w.span} dia${w.span>1?"s":""} de dados</span>`:`<span class="note">${d2(w.from)} → ${d2(w.to)}</span>`;
+    return`<div class="win"><div class="win-t"><h2>${title}</h2>${real}</div><div class="win-b scroll" style="padding:6px 8px"><table class="rkt"><thead><tr><th>#</th><th>Char</th><th>Lvl</th><th>XP</th></tr></thead><tbody>
+      ${shown.length?shown.map(tr).join(""):`<tr><td colspan="4" class="rk-empty">Nenhum char encontrado.</td></tr>`}
+      ${extra.length?`<tr><td colspan="4" class="note" style="text-align:center;background:var(--sunk)">Nossa PT fora do top ${top}</td></tr>`+extra.map(tr).join(""):""}</tbody></table></div></div>`};
+  box.innerHTML=tbl("Ontem",1)+tbl("7 dias",7)+tbl("30 dias",30);
+}
+["rkVoc","rkTop"].forEach(id=>$(id).addEventListener("change",renderRanking));
+function syncWorldSel(){const sel=$("rkWorld"),ws=worlds();if(!S.rkWorld||!ws.includes(S.rkWorld))S.rkWorld=ws[0];
+  const html=ws.map(w=>`<option${w===S.rkWorld?" selected":""}>${esc(w)}</option>`).join("");if(sel.dataset.h!==html){sel.innerHTML=html;sel.dataset.h=html}}
+async function getText(u){const r=await fetch(u+"?t="+Date.now());if(!r.ok)throw new Error(u);return r.text()}
+async function subWorld(w){if(!w||S.subs[w])return;S.subs[w]=1;
+  try{const idx=S.srvIdx||(S.srvIdx=JSON.parse(await getText("data/srv/index.json")));const ds=(idx[w]||[]).slice().sort();if(!ds.length){S.srv[w]=[];render();return}
+    const L=ds[ds.length-1],pick=new Set([L,ds[ds.length-2]]);[7,30].forEach(k=>{const t=iso(new Date(toDate(L)-k*dayMs));let b=null;ds.forEach(d=>{if(d<=t)b=d});pick.add(b||ds[0])});
+    const list=[...pick].filter(Boolean).sort();const docs=await Promise.all(list.map(async d=>({date:d,raw:await getText(`data/srv/${encodeURIComponent(w)}/${d}.txt`)})));
+    S.srv[w]=docs;render()}catch(e){S.srv[w]=[];render()}}
+function syncSubs(){const keep=new Set([ptWorld(),S.rkWorld||ptWorld()]);keep.forEach(subWorld);
+  Object.keys(S.subs).forEach(w=>{if(!keep.has(w)){delete S.subs[w];delete S.srv[w]}})}
+$("rkWorld").addEventListener("change",e=>{S.rkWorld=e.target.value;try{localStorage.setItem("ptWorld",S.rkWorld)}catch(x){}syncSubs();renderRanking()});
+try{S.rkWorld=localStorage.getItem("ptWorld")}catch(e){}
+function renderWorlds(){const ws=worlds();$("wList").innerHTML=ws.map(w=>`<span class="wchip">${esc(w)}${w===ptWorld()?' <span class="note">(PT)</span>':(S.canWrite?`<button class="x" type="button" data-w="${esc(w)}" aria-label="Remover ${esc(w)}">×</button>`:"")}</span>`).join("");
+  $("addWorld").hidden=!S.canWrite||ws.length>=5}
+$("addWorld").addEventListener("submit",e=>{e.preventDefault();let w=$("wName").value.trim().toLowerCase();if(!w||!/^[a-z]+$/.test(w)){$("wNote").textContent="Use só o nome do servidor, sem espaço.";return}
+  w=w[0].toUpperCase()+w.slice(1);const ws=worlds();if(ws.includes(w)){$("wNote").textContent=w+" já está na lista.";return}
+  if(ws.length>=5){$("wNote").textContent="Limite de 5 servidores.";return}
+  saveCfg({worlds:[...ws,w]});$("wName").value="";$("wNote").textContent=w+" adicionado. O ranking dele começa amanhã."});
+$("wList").addEventListener("click",e=>{const b=e.target.closest("button[data-w]");if(!b)return;saveCfg({worlds:worlds().filter(w=>w!==b.dataset.w)})});
+$("rkFind").addEventListener("input",renderRanking);
+function renderStatus(){const L=S.snaps[S.snaps.length-1];
+  if(!L){$("status").className="chip";$("status").innerHTML=`<i class="dot"></i>Sem leituras ainda`;return}
+  const age=diffDays(L.date,todayBR());$("status").className="chip "+(age<=1?"ok":age<=3?"late":"bad");
+  const at=L.fetchedAt?new Date(L.fetchedAt).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):"";
+  $("status").innerHTML=`<i class="dot"></i>${age<=0?"Atualizado hoje":age==1?"Atualizado ontem":"Sem leitura há "+age+" dias"} <b class="num">${d2(L.date)}${at?" "+at:""}</b>`}
+
+function renderPainel(stats){
+  const ok=stats.filter(s=>s.last),sum=k=>ok.reduce((a,s)=>a+(s[k]?s[k].gain:0),0);
+  const top=ok.filter(s=>s.ontem).sort((a,b)=>b.ontem.gain-a.ontem.gain)[0];
+  const near=ok.filter(s=>s.diasMeta>0).sort((a,b)=>a.diasMeta-b.diasMeta)[0];
+  const avgL=ok.length?ok.reduce((a,s)=>a+s.last.level,0)/ok.length:0;
+  const o0=ok[0]&&ok[0].ontem,span=o0?o0.span:1;
+  $("kpis").innerHTML=[
+    [span>1?`XP da PT desde ${d2(o0.from)}`:"XP da PT ontem",fx(sum("ontem")),span>1?`${span} dias sem leitura no meio`:"soma dos 4 chars"],
+    ["XP da PT em 30 dias",fx(sum("d30")),"soma dos 4 chars"],
+    ["Mais XP no último dia",top?first(top.c.name):"–",top?fx(top.ontem.gain):""],
+    ["Level médio",avgL?avgL.toLocaleString("pt-BR",{maximumFractionDigits:0}):"–",near?`${first(near.c.name)} é o mais perto da meta`:""]
+  ].map(([l,v,s])=>`<div class="win kpi"><span>${l}</span><b class="num">${v}</b><small>${esc(s)}</small></div>`).join("");
+
+  $("chars").innerHTML=stats.map(st=>{const c=st.c,vc=VC[c.voc]||"var(--gold)";
+    const head=`<div class="win-t"><h3 title="${esc(c.name)}">${esc(c.name)}</h3><span class="voc" title="${VNAME[c.voc]||""}">${c.voc}</span></div>`;
+    if(!st.last)return `<div class="win char" style="--vc:${vc}">${head}<div class="win-b note">Sem leitura ainda.</div></div>`;
+    let goal="";if(st.meta){if(st.falta<=0)goal=`<div class="goal ok">✔ Meta ${st.meta} batida</div>`;
+      else if(st.diasMeta==null)goal=`<div class="goal mid">Meta ${st.meta}: sem ritmo medido</div>`;
+      else{const d=Math.ceil(st.diasMeta),dt=new Date(Date.now()+d*dayMs).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
+        goal=`<div class="goal ${d<=15?"ok":d<=30?"mid":"bad"}">Lvl ${st.meta} em <b class="num">${d}</b> dias · ${dt}</div>`}}
+    const o=st.ontem;
+    return `<div class="win char" style="--vc:${vc}">${head}<div class="win-b">
+      <div class="hero"><div class="emb">${EMB[c.voc]||""}</div><div class="lvlbox"><small>Level</small><b class="num">${st.last.level}</b>${st.d30&&st.d30.lvl?`<em>+${st.d30.lvl} em ${st.d30.span} dias</em>`:""}</div></div>
+      <div class="xpbar" title="Faltam ${fx(st.toNext)} para o ${st.last.level+1}"><i style="width:${st.pct}%"></i><span>${st.pct.toFixed(1).replace(".",",")}% · faltam ${fx(st.toNext)}</span></div>
+      <div class="stats">
+        <div class="stat"><small>${o&&o.span>1?"XP desde "+d2(o.from):"XP ontem"}</small><b class="num">${o?fx(o.gain):"–"}</b></div>
+        <div class="stat"><small>Média/dia</small><b class="num">${st.avg?fx(st.avg):"–"}</b></div>
+        <div class="stat"><small>XP 7 dias</small><b class="num">${st.d7?fx(st.d7.gain):"–"}</b></div>
+        <div class="stat"><small>XP 30 dias</small><b class="num">${st.d30?fx(st.d30.gain):"–"}</b></div>
+        <div class="stat" style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline"><small>${esc(c.skillName)}</small><b class="num">${st.skill??"–"}</b></div>
+      </div>${goal}
+      ${st.birth!=null?`<div class="bday">${st.birth===0?"🎂 Aniversário do char hoje":"🎂 Aniversário do char em "+st.birth+" dias"}</div>`:""}
+    </div></div>`}).join("");
+
+  const r=ok.filter(s=>s.ontem).sort((a,b)=>b.ontem.gain-a.ontem.gain),mx=r.length?Math.max(...r.map(s=>s.ontem.gain),1):1;
+  $("rankNote").textContent=o0?(span>1?`${d2(o0.from)} → ${d2(ok[0].last.date)}`:d2(ok[0].last.date)):"";
+  $("rank").innerHTML=r.length?r.map((s,i)=>`<div class="rk" style="--vc:${VC[s.c.voc]}"><span class="pos">${i+1}</span><span class="nm">${esc(first(s.c.name))}</span><span class="tr"><i style="width:${Math.max(2,s.ontem.gain/mx*100)}%"></i></span><b class="num v">${fx(s.ontem.gain)}</b></div>`).join("")
+    +`<p class="note" style="margin:6px 0 0">Média de 30 dias: ${ok.filter(s=>s.avg).sort((a,b)=>b.avg-a.avg).map(s=>`${first(s.c.name)} <b class="num">${fx(s.avg)}</b>`).join(" · ")}</p>`
+    :`<div class="empty">Aparece depois de duas leituras.</div>`;
+  renderChart(stats);
+}
+
+function renderChart(stats){
+  const W=760,H=250,pl=50,pr=12,pt=12,pb=26,all=new Set(),pts={};
+  stats.forEach(st=>{pts[st.c.name]=[];for(let i=1;i<st.ser.length;i++){const a=st.ser[i-1],b=st.ser[i];if(diffDays(a.date,b.date)===1){pts[st.c.name].push({d:b.date,v:b.exp-a.exp});all.add(b.date)}}});
+  const dates=[...all].sort().slice(-45);
+  $("legend").innerHTML=stats.map(st=>`<span style="--c:${VC[st.c.voc]}"><i></i>${esc(first(st.c.name))}</span>`).join("");
+  if(dates.length<2){$("chart").innerHTML=`<div class="empty">O gráfico aparece com dois dias seguidos de leitura.</div>`;return}
+  const f=dates[0],span=Math.max(1,diffDays(f,dates[dates.length-1]));let max=0;
+  Object.values(pts).forEach(a=>a.forEach(p=>{if(p.d>=f)max=Math.max(max,p.v)}));
+  const step=max>8e8?2e8:1e8;max=Math.ceil(max/step)*step||step;
+  const x=d=>pl+(W-pl-pr)*diffDays(f,d)/span,y=v=>pt+(H-pt-pb)*(1-Math.max(0,v)/max);
+  let g="";for(let v=0;v<=max;v+=step)g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="#2c261d"/><text x="${pl-6}" y="${y(v)+3}" text-anchor="end">${fx(v)}</text>`;
+  const ev=Math.ceil(dates.length/8);dates.forEach((d,i)=>{if(i%ev===0||i===dates.length-1)g+=`<text x="${x(d)}" y="${H-8}" text-anchor="middle">${d2(d)}</text>`});
+  stats.forEach(st=>{const col=VC[st.c.voc],a=pts[st.c.name].filter(p=>p.d>=f);let path="",pv=null;
+    a.forEach(p=>{path+=(pv&&diffDays(pv.d,p.d)===1?"L":"M")+x(p.d).toFixed(1)+" "+y(p.v).toFixed(1);pv=p});
+    g+=`<path d="${path}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" opacity=".9"/>`;
+    const l=a[a.length-1];if(l)g+=`<circle cx="${x(l.d)}" cy="${y(l.v)}" r="4" fill="${col}" stroke="#0f0d0a" stroke-width="1.5"><title>${esc(st.c.name)} ${d2(l.d)}: ${fx(l.v)}</title></circle>`});
+  $("chart").innerHTML=`<svg class="chart" viewBox="0 0 ${W} ${H}" style="width:100%;min-width:520px;height:auto" role="img" aria-label="XP diária por personagem">${g}</svg>`;
+}
+
+function renderMetas(stats){
+  const fim=S.cfg.fimMeta||"2026-12-31",dias=Math.max(1,diffDays(todayBR(),fim));
+  $("fimLabel").textContent=d2(fim);$("diasRest").textContent=`faltam ${dias} dias`;
+  const lv=stats.filter(s=>s.last).map(s=>s.last.level);if(!lv.length){$("metas").innerHTML="";return}
+  const a=Math.floor(Math.min(...lv)/50)*50+50,b=Math.ceil(Math.max(...lv)/50)*50+300;
+  let h=`<thead><tr><th>Level</th>${stats.map(s=>`<th style="color:${VC[s.c.voc]}">${esc(first(s.c.name))}</th>`).join("")}</tr></thead><tbody>`;
+  for(let L=a;L<=b;L+=50){h+=`<tr><td class="num">${L}</td>`+stats.map(s=>{if(!s.last)return"<td>–</td>";const need=(expFor(L)-s.last.exp)/dias;
+    if(need<=0)return`<td class="done">✔ atingido</td>`;const hot=s.avg&&s.avg>=need;return`<td class="num ${hot?"hot":"cold"}">${fx(need)}</td>`}).join("")+"</tr>"}
+  $("metas").innerHTML=h+"</tbody>";
+}
+
+function calcVals(){const c=S.cfg;return{base:+c.xpHoraBase||0,pac:+c.tcPacote||250,reais:+c.tcReais||0,b:(c.boostTc||[30,45,90]).map(Number)}}
+function renderCalc(){const v=calcVals();
+  [["cBase",v.base],["cPac",v.pac],["cReais",v.reais],["cB1",v.b[0]],["cB2",v.b[1]],["cB3",v.b[2]]].forEach(([id,val])=>{if(document.activeElement!==$(id))$(id).value=val});
+  const sem=v.base*1.5,com=v.base*2.25,tcR=v.pac?v.reais/v.pac:0;
+  $("calcNote").innerHTML=`sem boost <b class="num">${fx(sem)}/h</b> · com boost <b class="num">${fx(com)}/h</b> · 1 TC = <b class="num">${brl(tcR)}</b>`;
+  $("scen").innerHTML=[0,1,2,3].map(k=>{let xp=0,tc=0;for(let i=0;i<3;i++){if(i<k){xp+=com;tc+=v.b[i]}else xp+=sem}
+    return`<div class="sc"><h4>${k===0?"Sem boost":k+" boost"+(k>1?"s":"")}</h4><div class="big num">${fx(xp)}<span class="note"> /dia</span></div>
+    <div class="r"><span>XP em 30 dias</span><b class="num">${fx(xp*30)}</b></div><div class="r"><span>TC por dia</span><b class="num">${tc}</b></div>
+    <div class="r"><span>TC em 30 dias</span><b class="num">${nf(tc*30)}</b></div><div class="r"><span>Custo 30 dias</span><b class="num" style="color:var(--gold)">${brl(tc*30*tcR)}</b></div></div>`}).join("");
+}
+
+function renderVendas(){const div=+S.cfg.divisao||4,tx=S.cfg.taxaMkt??0.02;
+  const rows=[...S.vendas].sort((a,b)=>(b.data||"").localeCompare(a.data||""));let totS=0,pend=0;
+  rows.forEach(r=>{const liq=(+r.preco||0)*(+r.qtd||1)*(1-tx);if(r.vendido==="Sim")totS+=liq;else pend++});
+  $("vkpis").innerHTML=[["Total vendido (−2% mkt)",fx(totS)],[`Para cada um (÷${div})`,fx(totS/div)],["Itens lançados",rows.length],["Ainda não vendidos",pend]]
+    .map(([l,v])=>`<div class="win kpi"><span>${l}</span><b class="num">${v}</b></div>`).join("");
+  $("vendRO").hidden=S.canWrite;
+  if(!rows.length){$("vendas").innerHTML=`<tbody><tr><td class="empty">Nenhum item ainda. Use o formulário acima.</td></tr></tbody>`;return}
+  const tb=$("vendas");if(tb.contains(document.activeElement)){S.vendDirty=true;return}
+  const dis=S.canWrite?"":"disabled",opt=(list,val)=>list.map(o=>`<option${o===val?" selected":""}>${o}</option>`).join("");
+  let h=`<thead><tr><th>Item</th><th>Data</th><th>Qtd</th><th>Preço un. (gp)</th><th>Líquido</th><th>Por membro</th><th>Origem</th><th>Vendido</th><th></th></tr></thead><tbody>`;
+  rows.forEach(r=>{const liq=(+r.preco||0)*(+r.qtd||1)*(1-tx),id=esc(r.id);
+    h+=`<tr data-id="${id}">
+    <td><input class="w-item" id="v-item-${id}" data-f="item" value="${esc(r.item)}" ${dis} aria-label="Item"></td>
+    <td><input class="w-d" id="v-data-${id}" data-f="data" type="date" value="${esc(r.data||"")}" ${dis} aria-label="Data"></td>
+    <td><input class="w-n" id="v-qtd-${id}" data-f="qtd" type="number" min="1" value="${r.qtd||1}" ${dis} aria-label="Quantidade"></td>
+    <td><input class="w-p" id="v-preco-${id}" data-f="preco" type="number" min="0" step="100000" value="${r.preco||""}" placeholder="0" ${dis} aria-label="Preço unitário"></td>
+    <td class="num">${r.preco?fx(liq):"–"}</td><td class="num">${r.preco?fx(liq/div):"–"}</td>
+    <td><select class="w-s" id="v-orig-${id}" data-f="origem" ${dis} aria-label="Origem">${opt(["Drop","Covet","Plunder","Desaire"],r.origem)}</select></td>
+    <td><select class="w-s ${r.vendido==="Sim"?"sim":""}" id="v-sold-${id}" data-f="vendido" ${dis} aria-label="Vendido">${opt(["Não","Sim"],r.vendido==="Sim"?"Sim":"Não")}</select></td>
+    <td>${S.canWrite?`<button class="x" data-del="${id}" aria-label="Apagar ${esc(r.item)}">×</button>`:""}</td></tr>`});
+  tb.innerHTML=h+"</tbody>";
+}
+
+function renderAjustes(){if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest("#ajustes"))return;
+  const dis=S.canWrite?"":"disabled";
+  let h=`<thead><tr><th>Char</th><th>Voc</th><th>Skill</th><th>Level alvo</th><th>Aniversário (dd/mm)</th><th></th></tr></thead><tbody>`;
+  S.cfg.chars.forEach((c,i)=>{const sk=(SKDEF[c.voc]||Object.keys(SKILLS));h+=`<tr><td>${esc(c.name)}</td><td style="color:${VC[c.voc]||"var(--gold)"}">${esc(c.voc)}</td>
+    <td><select id="aj-skill-${i}" data-i="${i}" data-k="skillCat" style="width:130px" ${dis}>${sk.map(k=>`<option value="${k}"${k===c.skillCat?" selected":""}>${SKILLS[k]}</option>`).join("")}</select></td>
+    <td><input id="aj-meta-${i}" data-i="${i}" data-k="meta" type="number" step="10" value="${c.meta||""}" style="width:100px" ${dis}></td>
+    <td><input id="aj-birth-${i}" data-i="${i}" data-k="birth" type="text" placeholder="15/10" value="${c.birth?c.birth.split("-").reverse().join("/"):""}" style="width:100px" ${dis}></td>
+    <td>${S.canWrite?`<button class="x" type="button" data-rm="${i}" aria-label="Remover ${esc(c.name)}">×</button>`:""}</td></tr>`});
+  $("ajustes").innerHTML=h+"</tbody>";
+  $("addCharWin").hidden=!S.canWrite;
+}
+function fillSkillSel(){const v=$("nVoc").value;$("nSkill").innerHTML=(SKDEF[v]||[]).map(k=>`<option value="${k}">${SKILLS[k]}</option>`).join("")}
+$("nVoc").addEventListener("change",fillSkillSel);fillSkillSel();
+const parseBirth=t=>{const m=String(t||"").trim().match(/^(\d{1,2})\/(\d{1,2})$/);return m?String(m[2]).padStart(2,"0")+"-"+String(m[1]).padStart(2,"0"):null};
+$("addChar").addEventListener("submit",e=>{e.preventDefault();if(!S.cfg||!S.canWrite)return;
+  const name=$("nName").value.trim().replace(/\s+/g," ");if(!name)return;
+  if(S.cfg.chars.some(c=>c.name.toLowerCase()===name.toLowerCase())){$("addNote").textContent="Esse char já está na PT.";return}
+  const voc=$("nVoc").value,cat=$("nSkill").value;
+  const chars=JSON.parse(JSON.stringify(S.cfg.chars));chars.push({name,voc,skillCat:cat,skillName:SKILLS[cat],skill:null,meta:+$("nMeta").value||null,birth:parseBirth($("nBirth").value)});
+  saveCfg({chars});$("addNote").textContent=`${name} adicionado`;["nName","nMeta","nBirth"].forEach(id=>$(id).value="")});
+const rmArm={};
+$("ajustes").addEventListener("click",e=>{const b=e.target.closest("button[data-rm]");if(!b)return;const i=+b.dataset.rm;
+  if(!rmArm[i]){rmArm[i]=1;b.textContent="remover?";b.style.color="var(--bad)";b.style.fontSize="12px";setTimeout(()=>{rmArm[i]=0;if(b.isConnected){b.textContent="×";b.style.color="";b.style.fontSize=""}},3000);return}
+  rmArm[i]=0;const chars=JSON.parse(JSON.stringify(S.cfg.chars));chars.splice(i,1);saveCfg({chars})});
+
+/* escrita */
+let cfgTimer=null,cfgBusy=Promise.resolve();
+function saveCfg(patch){Object.assign(S.cfg,patch);render();if(!S.db||!S.canWrite)return;clearTimeout(cfgTimer);
+  cfgTimer=setTimeout(()=>{const body=JSON.parse(JSON.stringify(S.cfg));cfgBusy=cfgBusy.then(()=>S.db.doc("config/main").set(body)).catch(e=>{if(e&&(e.code==="permission-denied"||e.code==="invalid_argument")){S.canWrite=false;render();alertRO()}})},700)}
+["cBase","cPac","cReais"].forEach(id=>$(id).addEventListener("input",e=>{const k={cBase:"xpHoraBase",cPac:"tcPacote",cReais:"tcReais"}[id];saveCfg({[k]:+e.target.value||0})}));
+["cB1","cB2","cB3"].forEach((id,i)=>$(id).addEventListener("input",e=>{const b=[...(S.cfg.boostTc||[30,45,90])];b[i]=+e.target.value||0;saveCfg({boostTc:b})}));
+$("ajustes").addEventListener("change",e=>{const t=e.target;if(!t.dataset.k)return;const chars=JSON.parse(JSON.stringify(S.cfg.chars)),c=chars[+t.dataset.i];
+  if(t.dataset.k==="meta")c.meta=+t.value||null;
+  else if(t.dataset.k==="skillCat"){c.skillCat=t.value;c.skillName=SKILLS[t.value];c.skill=null}
+  else c.birth=parseBirth(t.value);
+  t.blur();saveCfg({chars})});
+$("vData").value=todayBR();
+$("vendForm").addEventListener("submit",async e=>{e.preventDefault();if(!S.db||!S.canWrite)return;
+  const r={data:$("vData").value||null,item:$("vItem").value.trim(),qtd:+$("vQtd").value||1,preco:+$("vPreco").value||0,origem:$("vOrig").value,vendido:$("vSold").value,criadoEm:new Date().toISOString()};
+  if(!r.item)return;try{await S.db.collection("vendas").add(r);$("vItem").value="";$("vPreco").value="";$("vQtd").value=1}catch(err){$("vendNote").textContent="Não salvou: "+(err.message||err.code)}});
+const delArm={};
+function vendMsg(t,ok){const n=$("vendNote");n.textContent=t;n.className="note"+(ok?" saved":"");}
+function vendErr(err){const c=err&&err.code;const den=c==="permission-denied"||c==="invalid_argument";if(den){S.canWrite=false;$("vendRO").hidden=false;alertRO()}
+  vendMsg("Não salvou: "+(den?"sua conta não tem permissão de edição":(err&&(err.message||c))||"erro"))}
+$("vendas").addEventListener("change",async e=>{const t=e.target,f=t.dataset.f,tr=t.closest("tr");if(!f||!tr)return;
+  if(!S.db){vendMsg("Abra o site pelo Claude, logado, para editar.");return}
+  let v=t.value;if(f==="qtd")v=Math.max(1,+v||1);if(f==="preco")v=+v||0;if(f==="data")v=v||null;if(f==="item"){v=v.trim();if(!v)return}
+  const id=tr.dataset.id,loc=S.vendas.find(x=>x.id===id);if(loc)loc[f]=v;
+  if(f==="vendido")t.classList.toggle("sim",v==="Sim");
+  vendMsg("Salvando…");try{await S.db.doc("vendas/"+id).update({[f]:v});vendMsg("Salvo ✔",true)}catch(err){vendErr(err)}});
+$("vendas").addEventListener("focusout",()=>setTimeout(()=>{if(S.vendDirty&&!$("vendas").contains(document.activeElement)){S.vendDirty=false;render()}},50));
+$("vendas").addEventListener("click",async e=>{const b=e.target.closest("button[data-del]");if(!b||!S.db)return;const id=b.dataset.del;
+  if(!delArm[id]){delArm[id]=1;b.textContent="apagar?";b.style.color="var(--bad)";b.style.fontSize="12px";setTimeout(()=>{delArm[id]=0;if(b.isConnected){b.textContent="×";b.style.color="";b.style.fontSize=""}},3000);return}
+  try{await S.db.doc("vendas/"+id).delete();vendMsg("Item apagado",true)}catch(err){vendErr(err)}});
+
+/* dados: arquivos do repositório + Firebase para o que é editável */
+function alertRO(){const n=$("status");if(S.user&&!S.roWarned){S.roWarned=1;vendMsg("A conta "+S.user.email+" não está liberada para editar.")}}
+const FB=window.FIREBASE_CONFIG||null;
+function useSeed(seed){if(!S.cfg){S.cfg=JSON.parse(JSON.stringify(seed.config))}if(!S.fbVendas){S.vendas=Object.entries(seed.vendas||{}).map(([id,v])=>({id,...v}))}}
+function updAuthUI(){const b=$("authBtn");if(!S.fb){b.hidden=true;S.canWrite=false;return}b.hidden=false;
+  b.textContent=S.user?("Sair ("+(S.user.email||"").split("@")[0]+")"):"Entrar para editar";
+  S.canWrite=!!S.user;const f=$("vendForm").closest(".win");if(f)f.hidden=!S.canWrite;render()}
+(async()=>{
+  S.canWrite=false;$("vendForm").closest(".win").hidden=true;
+  let seed={config:{chars:[]},vendas:{}};
+  try{seed=JSON.parse(await getText("data/seed.json"))}catch(e){}
+  try{const sn=JSON.parse(await getText("data/snaps.json"));S.snaps=Object.entries(sn).map(([date,v])=>({date,...v})).sort((a,b)=>a.date.localeCompare(b.date))}catch(e){}
+  if(FB&&window.firebase){
+    try{firebase.initializeApp(FB);const db=firebase.firestore();S.db=db;S.fb=1;
+      firebase.auth().onAuthStateChanged(u=>{S.user=u||null;S.roWarned=0;updAuthUI()});
+      $("authBtn").addEventListener("click",()=>{if(S.user)firebase.auth().signOut();else firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>vendMsg("Não entrou: "+(e.message||e.code)))});
+      db.doc("config/main").onSnapshot(s=>{if(s.exists){S.cfg=JSON.parse(JSON.stringify(s.data()));}else{S.cfg=null;useSeed(seed);S.needImport=1}
+        syncWorldSel();syncSubs();render();showImport()},()=>{useSeed(seed);syncWorldSel();syncSubs();render()});
+      db.collection("vendas").onSnapshot(q=>{S.fbVendas=1;S.vendas=q.docs.map(d=>({id:d.id,...d.data()}));if(!q.size&&S.needImport)S.vendas=Object.entries(seed.vendas||{}).map(([id,v])=>({id,...v}));render()},()=>{});
+      updAuthUI();
+    }catch(e){S.fb=0;useSeed(seed);syncWorldSel();syncSubs();render()}
+  }else{useSeed(seed);syncWorldSel();syncSubs();render()}
+  function showImport(){let b=$("importBtn");if(!S.needImport||!S.canWrite){if(b)b.remove();return}
+    if(!b){b=document.createElement("button");b.id="importBtn";b.type="button";b.textContent="Carregar dados iniciais no Firebase";$("authBtn").after(b);
+      b.addEventListener("click",async()=>{b.disabled=true;try{const batch=S.db.batch();batch.set(S.db.doc("config/main"),seed.config);Object.entries(seed.vendas||{}).forEach(([id,v])=>batch.set(S.db.doc("vendas/"+id),v));await batch.commit();S.needImport=0;b.remove()}catch(e){b.disabled=false;vendErr(e)}})}}
+  const _u=updAuthUI;updAuthUI=function(){_u();showImport()};
+  try{const st=JSON.parse(await getText("data/status.json"));S.status=st}catch(e){}
+})();
+})();
+</script>
+</body></html>

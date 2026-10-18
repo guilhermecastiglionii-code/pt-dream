@@ -1,0 +1,147 @@
+{
+ "config": {
+  "boostTc": [
+   30,
+   45,
+   90
+  ],
+  "chars": [
+   {
+    "birth": "10-15",
+    "meta": 2300,
+    "name": "Gabz Implacavel",
+    "skill": 139,
+    "skillCat": "distancefighting",
+    "skillName": "Distance",
+    "voc": "RP"
+   },
+   {
+    "birth": "05-26",
+    "meta": 2250,
+    "name": "Marcha Implacavel",
+    "skill": 139,
+    "skillCat": "magiclevel",
+    "skillName": "Magic Level",
+    "voc": "ED"
+   },
+   {
+    "birth": "09-30",
+    "meta": 2150,
+    "name": "Twiiu",
+    "skill": 134,
+    "skillCat": "magiclevel",
+    "skillName": "Magic Level",
+    "voc": "MS"
+   },
+   {
+    "birth": "01-18",
+    "meta": 2150,
+    "name": "Kipersz",
+    "skill": 132,
+    "skillCat": "swordfighting",
+    "skillName": "Sword",
+    "voc": "EK"
+   }
+  ],
+  "divisao": 4,
+  "fimMeta": "2026-12-31",
+  "taxaMkt": 0.02,
+  "tcPacote": 250,
+  "tcReais": 52,
+  "world": "Collabra",
+  "worlds": [
+   "Collabra"
+  ],
+  "xpHoraBase": 35500000
+ },
+ "vendas": {
+  "seed00": {
+   "data": "2026-09-14",
+   "item": "Sanguine Boots",
+   "origem": "Covet",
+   "preco": 0,
+   "qtd": 1,
+   "vendido": "Sim"
+  },
+  "seed01": {
+   "data": "2026-09-14",
+   "item": "Tainted Heart",
+   "origem": "Drop",
+   "preco": 7000000,
+   "qtd": 5,
+   "vendido": "Sim"
+  },
+  "seed02": {
+   "data": null,
+   "item": "Sanguine Bow",
+   "origem": "Covet",
+   "preco": 0,
+   "qtd": 1,
+   "vendido": "Sim"
+  },
+  "seed03": {
+   "data": null,
+   "item": "Sanguine Rod",
+   "origem": "Covet",
+   "preco": 0,
+   "qtd": 1,
+   "vendido": "Sim"
+  },
+  "seed04": {
+   "data": null,
+   "item": "Sanguine Crossbow",
+   "origem": "Covet",
+   "preco": 0,
+   "qtd": 1,
+   "vendido": "Sim"
+  },
+  "seed05": {
+   "data": null,
+   "item": "Sanguine Hatchet",
+   "origem": "Covet",
+   "preco": 0,
+   "qtd": 1,
+   "vendido": "Sim"
+  },
+  "seed06": {
+   "data": null,
+   "item": "Sanguine Crossbow",
+   "origem": "Drop",
+   "preco": 0,
+   "qtd": 1,
+   "vendido": "Sim"
+  },
+  "seed07": {
+   "data": null,
+   "item": "Basic Promotion Scroll",
+   "origem": "Covet",
+   "preco": 0,
+   "qtd": 1,
+   "vendido": "Não"
+  },
+  "seed08": {
+   "data": null,
+   "item": "Sanguine Battleaxe",
+   "origem": "Covet",
+   "preco": 0,
+   "qtd": 1,
+   "vendido": "Sim"
+  },
+  "seed09": {
+   "data": null,
+   "item": "Tainted heart",
+   "origem": "Drop",
+   "preco": 0,
+   "qtd": 1,
+   "vendido": "Não"
+  },
+  "seed10": {
+   "data": "2026-09-28",
+   "item": "Tainted Heart",
+   "origem": "Drop",
+   "preco": 7000000,
+   "qtd": 8,
+   "vendido": "Sim"
+  }
+ }
+}
