@@ -655,16 +655,13 @@
 "source": "planilha/guildstats"
 },
 "2026-10-18": {
+"source": "tibiadata",
+"fetchedAt": "2026-10-18T19:20:00Z",
 "chars": {
 "Gabz Implacavel": {
 "exp": 192551430213,
 "level": 2262,
 "skill": 139
-},
-"Kipersz": {
-"exp": 153549902923,
-"level": 2098,
-"skill": 132
 },
 "Marcha Implacavel": {
 "exp": 177105395456,
@@ -675,9 +672,12 @@
 "exp": 158532604984,
 "level": 2120,
 "skill": 134
-}
 },
-"fetchedAt": "2026-10-18T18:19:55Z",
-"source": "tibiadata"
+"Kipersz": {
+"exp": 153549902923,
+"level": 2098,
+"skill": 132
+}
+}
 }
 }
