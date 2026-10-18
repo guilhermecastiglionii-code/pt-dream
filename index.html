@@ -161,6 +161,77 @@ button.x:hover{color:var(--bad)}
 @media (max-width:1000px){.chars{grid-template-columns:repeat(2,minmax(0,1fr))}.ov,.grid2{grid-template-columns:1fr}.scen{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.chars{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi b{font-size:19px}.rk{grid-template-columns:20px 80px minmax(0,1fr) 62px}}
 @media (prefers-reduced-motion:no-preference){.xpbar i,.rk .tr i{transition:width .7s ease}}
+
+/* ===== Tema Tibia: pedra de masmorra, janelas do cliente, números com contorno ===== */
+:root{--f-num:Verdana,"DejaVu Sans",Tahoma,sans-serif;--outline:1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000,0 1px 0 #000,0 -1px 0 #000,1px 0 0 #000,-1px 0 0 #000;
+  --metal-hi:#7a6a52;--metal:#3b3328;--metal-lo:#16120d;--rivet:radial-gradient(circle at 35% 35%,#c9b38a 0 1px,#6d5c43 2px,#2a2219 3px,transparent 3.5px)}
+body{background-color:#121009;
+  background-image:
+   radial-gradient(900px 420px at 50% -140px,rgba(227,183,90,.13),transparent 70%),
+   radial-gradient(circle at 20% 30%,rgba(0,0,0,.35),transparent 40%),
+   linear-gradient(rgba(0,0,0,.38) 2px,transparent 2px),
+   linear-gradient(90deg,rgba(0,0,0,.38) 2px,transparent 2px),
+   linear-gradient(90deg,rgba(0,0,0,.38) 2px,transparent 2px),
+   linear-gradient(180deg,#1b1711,#141109);
+  background-size:auto,auto,100% 46px,92px 92px,92px 92px,auto;
+  background-position:0 0,0 0,0 0,0 0,46px 46px,0 0;
+  background-attachment:fixed}
+/* janela */
+.win{position:relative;border:2px solid #000;border-radius:3px;
+  background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 40%),repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0 3px,transparent 3px 7px),linear-gradient(180deg,#29231b,#1c1813);
+  box-shadow:inset 0 0 0 1px var(--metal-hi),inset 2px 2px 0 rgba(255,255,255,.06),inset -2px -2px 0 rgba(0,0,0,.6),0 8px 20px rgba(0,0,0,.6)}
+.win-t{position:relative;padding:8px 22px;border-radius:1px 1px 0 0;border-bottom:2px solid #000;
+  background:linear-gradient(180deg,#5b4e3c 0,#3d3428 45%,#2c251c 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 0 var(--metal-hi)}
+.win-t::before,.win-t::after{content:"";position:absolute;top:50%;width:8px;height:8px;margin-top:-4px;background:var(--rivet)}
+.win-t::before{left:7px}.win-t::after{right:7px}
+.win-t h2,.win-t h3{color:#f0cf7f;text-shadow:var(--outline)}
+.char .win-t{border-top:3px solid var(--vc)}
+.char .win-t h3{color:#fff;text-shadow:var(--outline);font-family:var(--f-num);font-weight:700;font-size:14px}
+/* números estilo jogo */
+.num{font-family:var(--f-num);font-weight:700;letter-spacing:0}
+.kpi b,.stat b,.sc .big,.lvlbox b,.rk .v,.rkt td.num,#metas td.num{color:#fff;text-shadow:var(--outline)}
+.lvlbox b{color:#ffd76a;font-family:var(--f-num);font-size:30px;letter-spacing:-.5px}
+.lvlbox em{color:#7dff7d;text-shadow:var(--outline)}
+.kpi b{font-size:22px}
+.kpi span,.stat small,th,label{text-shadow:0 1px 0 #000}
+td.hot{color:#7dff7d!important}td.cold{color:#ffd76a!important}td.done{color:#8b8170!important;text-shadow:none!important}
+/* barras como no cliente */
+.xpbar{height:15px;border:1px solid #000;background:#3a0f0c;box-shadow:inset 0 0 0 1px #1a0705,0 0 0 1px var(--metal-hi)}
+.xpbar i{background:linear-gradient(180deg,#9dff9d 0,#33c43b 40%,#178a1f 100%);box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
+.xpbar span{font-family:var(--f-num);font-weight:700;font-size:10px;line-height:15px;color:#fff;text-shadow:var(--outline)}
+.rk .tr{height:12px;border:1px solid #000;background:#1a1510;box-shadow:0 0 0 1px var(--metal)}
+.rk .tr i{background:linear-gradient(180deg,rgba(255,255,255,.35),transparent 50%),var(--vc)}
+/* abas e botões chanfrados */
+.tabs{border-bottom:2px solid #000;gap:3px}
+.tab{background:linear-gradient(180deg,#4a4033,#2c251d);border:2px solid #000;border-bottom:none;color:#cbbf9f;text-shadow:0 1px 0 #000;
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.18),inset -1px 0 0 rgba(0,0,0,.5);margin-bottom:0}
+.tab:hover{color:#fff}
+.tab[aria-selected="true"]{background:linear-gradient(180deg,#6a5a43,#3d3428);color:#ffd76a;text-shadow:var(--outline);border-bottom:none}
+button{background:linear-gradient(180deg,#6b5c45,#3c3329);color:#f3e6c4;border:2px solid #000;border-radius:2px;text-shadow:0 1px 0 #000;
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.22),inset -1px -1px 0 rgba(0,0,0,.55)}
+button:hover{filter:brightness(1.12)}
+button:active{box-shadow:inset -1px -1px 0 rgba(255,255,255,.15),inset 1px 1px 0 rgba(0,0,0,.6)}
+#syncBtn{background:linear-gradient(180deg,#e9c46a,#a8761f);color:#1d1406;text-shadow:none}
+button.ghost{background:linear-gradient(180deg,#3a3229,#231e18)}
+button.x{background:transparent;border:none;box-shadow:none}
+input,select{background:#0b0907;border:1px solid #000;box-shadow:inset 1px 1px 0 #000,0 0 0 1px var(--metal);color:#f3e6c4;border-radius:2px}
+.chip{background:linear-gradient(180deg,#2b241c,#1a1612);border:1px solid #000;box-shadow:inset 0 0 0 1px var(--metal)}
+/* emblema da vocação */
+.emb{background:radial-gradient(circle at 50% 40%,#2f281f,#0d0b08);border:2px solid #000;box-shadow:0 0 0 1px var(--metal-hi),inset 0 0 10px rgba(0,0,0,.8)}
+.emb svg{filter:drop-shadow(0 0 4px currentColor)}
+.stat{background:#0f0c09;border:1px solid #000;box-shadow:0 0 0 1px #3a3127}
+/* medalhas no top 3 */
+.rkt tr.top3 td.p,.rk .pos{font-family:var(--f-num)}
+.rkt tbody tr:nth-child(1).top3 td.p::before,.rkt tbody tr:nth-child(2).top3 td.p::before,.rkt tbody tr:nth-child(3).top3 td.p::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:0;border:1px solid #000}
+.rkt tbody tr:nth-child(1).top3 td.p::before{background:radial-gradient(circle at 35% 35%,#fff6c2,#e3b75a 60%,#8a6418)}
+.rkt tbody tr:nth-child(2).top3 td.p::before{background:radial-gradient(circle at 35% 35%,#fff,#c8c8c8 60%,#6d6d6d)}
+.rkt tbody tr:nth-child(3).top3 td.p::before{background:radial-gradient(circle at 35% 35%,#ffd9b3,#c07a3b 60%,#6d3f17)}
+.rkt td.n{font-weight:600}
+/* moeda de ouro nos valores em gp */
+.coin::after{content:"";display:inline-block;width:12px;height:12px;margin-left:5px;vertical-align:-1px;border-radius:50%;border:1px solid #000;
+  background:radial-gradient(circle at 35% 30%,#fff3b0 0 2px,#f2c443 3px,#b8860b 70%,#6b4a05)}
+h1{font-size:clamp(28px,4.5vw,40px);text-shadow:2px 2px 0 #000,0 0 22px rgba(227,183,90,.35)}
+.foot{color:#7c7262;text-shadow:0 1px 0 #000}
 </style>
 
 </head><body>
@@ -516,7 +587,7 @@ function renderVendas(){const div=+S.cfg.divisao||4,tx=S.cfg.taxaMkt??0.02;
   const rows=[...S.vendas].sort((a,b)=>(b.data||"").localeCompare(a.data||""));let totS=0,pend=0;
   rows.forEach(r=>{const liq=(+r.preco||0)*(+r.qtd||1)*(1-tx);if(r.vendido==="Sim")totS+=liq;else pend++});
   $("vkpis").innerHTML=[["Total vendido (−2% mkt)",fx(totS)],[`Para cada um (÷${div})`,fx(totS/div)],["Itens lançados",rows.length],["Ainda não vendidos",pend]]
-    .map(([l,v])=>`<div class="win kpi"><span>${l}</span><b class="num">${v}</b></div>`).join("");
+    .map(([l,v],i)=>`<div class="win kpi"><span>${l}</span><b class="num${i<2?" coin":""}">${v}</b></div>`).join("");
   $("vendRO").hidden=S.canWrite;
   if(!rows.length){$("vendas").innerHTML=`<tbody><tr><td class="empty">Nenhum item ainda. Use o formulário acima.</td></tr></tbody>`;return}
   const tb=$("vendas");if(tb.contains(document.activeElement)){S.vendDirty=true;return}
