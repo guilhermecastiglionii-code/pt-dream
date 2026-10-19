@@ -67,6 +67,42 @@ def page(world, cat, n):
     return hs.get("highscore_list") or [], (d.get("information") or {}).get("timestamp")
 
 
+GS_URL = "https://guildstats.eu/top-experience?world={world}&time={time}&type=0"
+VOCS = {"EK", "ED", "MS", "RP", "EM", "K", "D", "S", "P", "M", "N"}
+
+
+def guildstats_rank(world):
+    """Ranking pronto de XP (ontem, 7 e 30 dias) do GuildStats. Devolve None se o site bloquear."""
+    import html as H
+    import re
+    out = {}
+    for key, t in (("d1", 0), ("d7", 7), ("d30", 30)):
+        try:
+            req = urllib.request.Request(GS_URL.format(world=world, time=t), headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
+                "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8"})
+            with urllib.request.urlopen(req, timeout=40) as r:
+                page_html = r.read().decode("utf-8", "replace")
+        except Exception as e:  # noqa: BLE001
+            print(f"guildstats {world} {key}: {e}", file=sys.stderr)
+            return None
+        lines = []
+        for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", page_html, re.S | re.I):
+            cells = [H.unescape(re.sub(r"<[^>]+>", " ", c)).strip() for c in re.findall(r"<td[^>]*>(.*?)</td>", tr, re.S | re.I)]
+            cells = [re.sub(r"\s+", " ", c) for c in cells]
+            if len(cells) < 5 or not cells[0].isdigit():
+                continue
+            name, level, gain = cells[1], re.sub(r"\D", "", cells[2]), re.sub(r"[^\d-]", "", cells[3])
+            voc = next((c for c in cells[4:] if c in VOCS), "")
+            if name and level and gain:
+                lines.append(f"{name}|{level}|{gain}|{voc}")
+        if len(lines) < 20:
+            print(f"guildstats {world} {key}: só {len(lines)} linhas (bloqueado?)", file=sys.stderr)
+            return None
+        out[key] = "\n".join(lines)
+    return out
+
+
 def main():
     # dia do jogo: a leitura feita depois do server save traz a XP do dia anterior
     today = (datetime.now(timezone.utc) - timedelta(hours=9) - timedelta(days=1)).strftime("%Y-%m-%d")
@@ -117,6 +153,15 @@ def main():
                 os.remove(p)
         idx[w] = [d for d in ds if d >= limit]
     json.dump(idx, open(idx_path, "w"), indent=0)
+
+    # 1b) ranking pronto do GuildStats (ontem, 7 e 30 dias)
+    for w in worlds:
+        gs = guildstats_rank(w)
+        if gs:
+            os.makedirs(os.path.join(DATA, "gsrank"), exist_ok=True)
+            json.dump({"world": w, "date": today, "source": "guildstats", **gs},
+                      open(os.path.join(DATA, "gsrank", w + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
+            print(f"{w}: GuildStats ok")
 
     # 2) XP e skill dos chars da PT
     found = {}

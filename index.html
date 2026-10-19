@@ -486,7 +486,9 @@ function syncWorldSel(){const sel=$("rkWorld"),ws=worlds();if(!S.rkWorld||!ws.in
   const html=ws.map(w=>`<option${w===S.rkWorld?" selected":""}>${esc(w)}</option>`).join("");if(sel.dataset.h!==html){sel.innerHTML=html;sel.dataset.h=html}}
 async function getText(u){const r=await fetch(u+"?t="+Date.now());if(!r.ok)throw new Error(u);return r.text()}
 async function subWorld(w){if(!w||S.subs[w])return;S.subs[w]=1;
-  if(S.db){S.db.doc("gsrank/"+w).get().then(d=>{S.gs=S.gs||{};if(d.exists){S.gs[w]=d.data();render()}}).catch(()=>{})}
+  {const keep=v=>{if(!v||!v.d1)return;S.gs=S.gs||{};const o=S.gs[w];if(!o||(v.date||"")>=(o.date||"")){S.gs[w]=v;render()}};
+   getText(`data/gsrank/${encodeURIComponent(w)}.json`).then(t=>keep(JSON.parse(t))).catch(()=>{});
+   if(S.db){S.db.doc("gsrank/"+w).get().then(d=>{if(d.exists)keep(d.data())}).catch(()=>{})}}
   try{let idx={};try{idx=S.srvIdx||(S.srvIdx=JSON.parse(await getText("data/srv/index.json")))}catch(e){}
     const fbDocs={};if(S.db){try{const q=await S.db.collection("srv/"+w+"/days").orderBy("date","desc").limit(40).get();q.docs.forEach(d=>{const v=d.data();if(v&&v.raw&&v.date<=gameDay())fbDocs[v.date]=v})}catch(e){}}
     const ds=[...new Set([...(idx[w]||[]),...Object.keys(fbDocs)])].sort();if(!ds.length){S.srv[w]=[];render();return}
