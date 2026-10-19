@@ -92,8 +92,9 @@ def guildstats_rank(world):
             cells = [re.sub(r"\s+", " ", c) for c in cells]
             if len(cells) < 5 or not cells[0].isdigit():
                 continue
-            name, level, gain = cells[1], re.sub(r"\D", "", cells[2]), re.sub(r"[^\d-]", "", cells[3])
-            voc = next((c for c in cells[4:] if c in VOCS), "")
+            name = re.split(r"\s+Verificar no|\s+Check on|\s+Comparar", cells[1])[0].strip()
+            level, gain = re.sub(r"\D", "", cells[2]), re.sub(r"[^\d-]", "", cells[3])
+            voc = next((c.split()[0] for c in cells[4:] if c and c.split()[0] in VOCS), "")
             if name and level and gain:
                 lines.append(f"{name}|{level}|{gain}|{voc}")
         if len(lines) < 20:
