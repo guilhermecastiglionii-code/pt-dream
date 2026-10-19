@@ -418,7 +418,14 @@ function gainOver(ser,days){if(ser.length<2)return null;const last=ser[ser.lengt
   const base=atOrBefore(ser,target)||ser[0];if(base===last)return null;return{gain:last.exp-base.exp,span:diffDays(base.date,last.date),from:base.date,lvl:last.level-base.level}}
 function charStats(c){const ser=series(c.name),last=ser[ser.length-1]||null,prev=ser[ser.length-2]||null,st={c,ser,last};if(!last)return st;
   st.ontem=prev?{gain:last.exp-prev.exp,span:diffDays(prev.date,last.date),from:prev.date}:null;
-  st.d7=gainOver(ser,7);st.d30=gainOver(ser,30);st.avg=st.d30&&st.d30.span?st.d30.gain/st.d30.span:null;
+  st.d7=gainOver(ser,7);st.d30=gainOver(ser,30);
+  /* GuildStats é a referência (mesma fonte da planilha): usa os ganhos dele quando estão em dia */
+  const G=S.gs&&S.gs[ptWorld()];
+  if(G&&G.date>=last.date){const gv=k=>{const m=String(G[k]||"").split("\n").find(l=>l.split("|")[0].toLowerCase()===c.name.toLowerCase());return m?+m.split("|")[2]:null};
+    const g1=gv("d1"),g7=gv("d7"),g30=gv("d30");
+    if(g1!=null)st.ontem={gain:g1,span:1,from:G.date};else if(G.date>last.date)st.ontem=null;
+    if(g7!=null)st.d7={...(st.d7||{}),gain:g7,span:7};if(g30!=null)st.d30={...(st.d30||{}),gain:g30,span:30}}
+  st.avg=st.d30&&st.d30.span?st.d30.gain/st.d30.span:null;
   const lo=expFor(last.level),hi=expFor(last.level+1);st.pct=Math.max(0,Math.min(100,(last.exp-lo)/(hi-lo)*100));st.toNext=hi-last.exp;
   st.meta=+c.meta||0;if(st.meta){st.falta=expFor(st.meta)-last.exp;st.diasMeta=st.falta<=0?0:(st.avg>0?st.falta/st.avg:null)}
   {const ws=[...ser].reverse().find(p=>p.skill!=null);st.skill=ws?ws.skill:c.skill;}
@@ -469,7 +476,7 @@ function renderRanking(){
   const gsWin=k=>{if(!GS||!GS["d"+k])return null;const list=String(GS["d"+k]).trim().split(/\n/).map(l=>{const a=l.split("|");return{name:a[0],level:+a[1],gain:+a[2],voc:a[3],dl:0}}).filter(r=>r.name&&r.name!=="Name Changed");
     return{list,from:null,to:GS.date,span:k,gs:1}};
   const tbl=(title,days)=>{let w=serverWindow(days,docs);const g=gsWin(days);
-    if(g&&(!w||w.span<days||w.to<g.to))w=g;
+    if(g&&(!w||w.span<days||w.to<=g.to))w=g;
     if(!w)return`<div class="win"><div class="win-t"><h2>${title}</h2></div><div class="rk-empty">Sem dados ainda.</div></div>`;
     let rows=w.list.filter(r=>!vf||fam(r.voc)===vf);rows.forEach((r,i)=>r.vpos=i+1);
     let shown=q?rows.filter(r=>r.name.toLowerCase().includes(q)):rows.slice(0,top);
