@@ -1469,20 +1469,20 @@
 },
 "2026-10-20": {
 "source": "tibiadata",
-"fetchedAt": "2026-10-21T15:39:08Z",
+"fetchedAt": "2026-10-21T17:20:00Z",
 "chars": {
 "Gabz Implacavel": {
-"exp": 193193070658,
+"exp": 193248745495,
 "level": 2265,
 "skill": 139
 },
 "Marcha Implacavel": {
-"exp": 177872763099,
+"exp": 177928437936,
 "level": 2203,
 "skill": 139
 },
 "Twiiu": {
-"exp": 159339200523,
+"exp": 159394875360,
 "level": 2124,
 "skill": 134
 },
@@ -1492,7 +1492,7 @@
 "skill": 132
 },
 "Gastlyy": {
-"exp": 55777176385,
+"exp": 55777177045,
 "level": 1497,
 "skill": 135
 },
