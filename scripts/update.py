@@ -398,14 +398,22 @@ def main():
             continue
         why = []
         ok = check_gs(gs["d1"], pairs, why)
-        # aceite manual de um dia (workflow "Run workflow" com a data): exige que os chars da PT batam exatamente
+        # aceite manual de um dia (Run workflow com a data). Trava: pelo menos 10 nomes exatos, 3 deles da PT,
+        # e em todo nome que não bateu o GuildStats é MAIOR que a diferença oficial (base de ontem lida tarde).
+        # Lista do dia errado daria diferenças para os dois lados e não passa.
         if not ok and os.environ.get("ACEITAR_GS", "").strip() == today and w == pt_world:
-            pt_pairs = {c["name"].lower(): pairs[c["name"].lower()] for c in chars
-                        if c.get("name") and c["name"].lower() in pt_names_fb}
-            ok_pt = check_gs(gs["d1"], pt_pairs) if len(pt_pairs) >= 3 else None
-            if ok_pt and ok_pt == len(pt_pairs):
-                ok = ok_pt
-                why.append("aceito manualmente: chars da PT conferidos")
+            gsv = {}
+            for l in gs["d1"].splitlines():
+                q = l.split("|")
+                if len(q) >= 3 and q[2].lstrip("-").isdigit():
+                    gsv[q[0].lower()] = int(q[2])
+            exact = [n for n, d in pairs.items() if gsv.get(n) == d]
+            wrong = [n for n, d in pairs.items() if n in gsv and gsv[n] != d]
+            pt_exact = [n for n in exact if n in pt_names_fb]
+            if len(exact) >= 10 and len(pt_exact) >= 3 and all(gsv[n] > pairs[n] for n in wrong):
+                ok = len(exact)
+                why.append(f"aceito manualmente: {len(exact)} exatos ({len(pt_exact)} da PT), "
+                           f"{len(wrong)} com base de ontem lida tarde")
         if not ok or ok < need:
             gs_status[w] = "não gravado: " + " | ".join(why)
             print(f"{w}: {gs_status[w]}")
