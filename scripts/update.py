@@ -165,12 +165,25 @@ def save_json(path, obj, **kw):
         json.dump(obj, f, ensure_ascii=False, **kw)
 
 
+def fs_doc(path):
+    """Documento do Firestore (leitura pública) ou None."""
+    if not PROJECT:
+        return None
+    d = get_json(f"https://firestore.googleapis.com/v1/projects/{PROJECT}/databases/(default)/documents/{path}", tries=2)
+    if d and "fields" in d:
+        return {k: fs_value(v) for k, v in d["fields"].items()}
+    return None
+
+
 def read_srv(world, day):
-    """{nome: exp} do top 500 gravado de um dia (arquivo final ou páginas válidas pendentes)."""
+    """{nome: exp} do top 500 de um dia. Igual ao site: o Firebase vale antes do arquivo do repositório."""
     out = {}
     p = os.path.join(DATA, "srv", world, day + ".txt")
     rows = []
-    if os.path.exists(p):
+    fb = fs_doc(f"srv/{world}/days/{day}")
+    if fb and fb.get("raw"):
+        rows = [x.split("|") for x in str(fb["raw"]).splitlines()]
+    elif os.path.exists(p):
         with open(p, encoding="utf-8") as f:
             rows = [x.split("|") for x in f.read().splitlines()]
     else:
@@ -359,7 +372,11 @@ def main():
             continue
         pairs = {}
         if w == pt_world:
-            a, b = (snaps.get(yday) or {}).get("chars") or {}, (snaps.get(today) or {}).get("chars") or {}
+            def snap_chars(day):
+                c = dict((snaps.get(day) or {}).get("chars") or {})
+                c.update((fs_doc(f"snaps/{day}") or {}).get("chars") or {})
+                return c
+            a, b = snap_chars(yday), snap_chars(today)
             for n in b:
                 if n in a and b[n].get("exp") and a[n].get("exp"):
                     pairs[n.lower()] = b[n]["exp"] - a[n]["exp"]
