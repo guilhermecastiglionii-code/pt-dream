@@ -2,13 +2,18 @@ name: Atualizar dados
 
 on:
   schedule:
-    # várias tentativas por dia: o GitHub às vezes atrasa horas; cada rodada só sobrescreve o dia
-    - cron: "17 9 * * *"    # 06:17 Brasília
-    - cron: "47 10 * * *"   # 07:47
-    - cron: "23 12 * * *"   # 09:23
-    - cron: "53 14 * * *"   # 11:53
-    - cron: "37 17 * * *"   # 14:37
-    - cron: "41 21 * * *"   # 18:41
+    # 5 leituras por dia depois do server save (10h de Berlim): 40 min, 1h40, 3h40, 5h40 e 8h40 depois.
+    # O cron do GitHub é em UTC; a lista cobre horário de verão e de inverno de Berlim.
+    # Cada rodada só completa o que falta; antes do server save ou com tudo pronto, não muda nada.
+    - cron: "40 8 * * *"
+    - cron: "40 9 * * *"
+    - cron: "40 10 * * *"
+    - cron: "40 11 * * *"
+    - cron: "40 12 * * *"
+    - cron: "40 13 * * *"
+    - cron: "40 14 * * *"
+    - cron: "40 16 * * *"
+    - cron: "40 17 * * *"
   push:
     branches: [main]
     paths: ["scripts/**", ".github/workflows/**"]

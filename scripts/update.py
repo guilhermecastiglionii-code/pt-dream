@@ -1,7 +1,17 @@
 """Leitura diária do highscore do Tibia para o site PT Dream.
 
-Roda no GitHub Actions. Lê a configuração (chars da PT e servidores do ranking)
-do Firestore, busca o highscore na API TibiaData e grava os arquivos em data/.
+Roda no GitHub Actions, 5 vezes por dia depois do server save (10h de Berlim).
+Lê a configuração (chars da PT e servidores do ranking) do Firestore, busca o
+highscore na API TibiaData e grava os arquivos em data/.
+
+Regras:
+- Cada leitura vale como "XP no server save". O arquivo do dia leva a data do dia
+  jogado (data do server save menos 1 dia).
+- Uma página só vale se os dados dela forem de depois do server save
+  (timestamp - highscore_age >= SS). Página antiga (cache) nunca é gravada.
+- A primeira leitura válida do dia fica; as seguintes só completam o que falta.
+- O ranking do GuildStats só é gravado se a XP dele bater exatamente com a
+  diferença do highscore oficial entre dois server saves.
 """
 import json
 import os
@@ -9,6 +19,7 @@ import sys
 import time
 import urllib.request
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 
 API = "https://api.tibiadata.com/v4/highscores/{world}/{cat}/all/{page}"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -60,15 +71,51 @@ def load_config():
 
 
 def page(world, cat, n):
+    """Uma página do highscore. Devolve (linhas, dado_em) ou (None, None).
+
+    dado_em = information.timestamp - highscore_age minutos: o instante real dos dados.
+    """
     d = get_json(API.format(world=world, cat=cat, page=n))
     if not d:
         return None, None
     hs = d.get("highscores") or {}
-    return hs.get("highscore_list") or [], (d.get("information") or {}).get("timestamp")
+    ts = (d.get("information") or {}).get("timestamp")
+    at = None
+    if ts:
+        try:
+            t = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            at = t - timedelta(minutes=int(hs.get("highscore_age") or 0))
+        except ValueError:
+            at = None
+    return hs.get("highscore_list") or [], at
+
+
+def ss_at(day):
+    """Instante (UTC) do server save: 10:00 em Berlim na data dada."""
+    y, m, d = map(int, day.split("-"))
+    return datetime(y, m, d, 10, 0, tzinfo=ZoneInfo("Europe/Berlin")).astimezone(timezone.utc)
+
+
+def last_ss(now):
+    day = now.astimezone(ZoneInfo("Europe/Berlin")).date()
+    s = ss_at(day.isoformat())
+    if now < s:
+        s = ss_at((day - timedelta(days=1)).isoformat())
+    return s
+
+
+def iso(t):
+    return t.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def line(r):
+    return f"{r['rank']}|{r['name']}|{r['vocation']}|{r['level']}|{r['value']}"
 
 
 GS_URL = "https://guildstats.eu/top-experience?world={world}&time={time}&type=0"
 VOCS = {"EK", "ED", "MS", "RP", "EM", "K", "D", "S", "P", "M", "N"}
+
+
 
 
 def guildstats_rank(world):
@@ -104,83 +151,172 @@ def guildstats_rank(world):
     return out
 
 
+def load_json(path, default):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return default
+
+
+def save_json(path, obj, **kw):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(obj, f, ensure_ascii=False, **kw)
+
+
+def read_srv(world, day):
+    """{nome: exp} do top 500 gravado de um dia (arquivo final ou páginas válidas pendentes)."""
+    out = {}
+    p = os.path.join(DATA, "srv", world, day + ".txt")
+    rows = []
+    if os.path.exists(p):
+        with open(p, encoding="utf-8") as f:
+            rows = [x.split("|") for x in f.read().splitlines()]
+    else:
+        pend = load_json(os.path.join(DATA, "pending", world + ".json"), {})
+        if pend.get("day") == day:
+            for pg in pend.get("pages", {}).values():
+                rows += [x.split("|") for x in pg["rows"]]
+    for r in rows:
+        if len(r) >= 5 and r[1] != "Name Changed" and r[4].isdigit():
+            out[r[1].lower()] = int(r[4])
+    return out
+
+
+def read_world(world, day, ss):
+    """Top 500 do servidor com a regra do server save. Devolve linhas válidas (dicts)."""
+    folder = os.path.join(DATA, "srv", world)
+    final = os.path.join(folder, day + ".txt")
+    if os.path.exists(final):
+        print(f"{world}: {day} já completo")
+        with open(final, encoding="utf-8") as f:
+            return [dict(zip(("rank", "name", "vocation", "level", "value"), x.split("|")))
+                    for x in f.read().splitlines() if x.count("|") >= 4]
+    pp = os.path.join(DATA, "pending", world + ".json")
+    pend = load_json(pp, {})
+    if pend.get("day") != day:
+        pend = {"day": day, "ss": iso(ss), "pages": {}}
+    last = None  # última página do servidor (menos de 50 linhas)
+    for n in range(1, 11):
+        if str(n) in pend["pages"]:
+            if len(pend["pages"][str(n)]["rows"]) < 50:
+                last = n
+                break
+            continue
+        lst, at = None, None
+        for _ in range(2):
+            lst, at = page(world, "experience", n)
+            if lst is not None and at and at >= ss:
+                break
+        if lst is None:
+            print(f"{world} p{n}: falhou")
+            continue
+        if not at or at < ss:
+            print(f"{world} p{n}: ainda com dados de antes do server save ({iso(at) if at else '?'})")
+            continue
+        pend["pages"][str(n)] = {"at": iso(at), "rows": [line(r) for r in lst]}
+        if len(lst) < 50:
+            last = n
+            break
+    need = range(1, (last or 10) + 1)
+    done = all(str(n) in pend["pages"] for n in need)
+    rows = []
+    for n in sorted(pend["pages"], key=int):
+        rows += pend["pages"][n]["rows"]
+    print(f"{world}: {len(pend['pages'])} páginas válidas de {len(need)}")
+    if done and rows:
+        os.makedirs(folder, exist_ok=True)
+        with open(final, "w", encoding="utf-8") as f:
+            f.write("\n".join(rows) + "\n")
+        if os.path.exists(pp):
+            os.remove(pp)
+    elif pend["pages"]:
+        save_json(pp, pend, indent=0)
+    return [dict(zip(("rank", "name", "vocation", "level", "value"), x.split("|"))) for x in rows]
+
+
+def check_gs(gs_d1, pairs):
+    """Confere a XP do GuildStats com a diferença oficial. Devolve quantos nomes bateram ou None."""
+    gs = {}
+    for l in gs_d1.splitlines():
+        p = l.split("|")
+        if len(p) >= 3 and p[0] != "Name Changed":
+            try:
+                gs[p[0].lower()] = int(p[2])
+            except ValueError:
+                pass
+    ok = 0
+    for name, delta in pairs.items():
+        if name in gs:
+            if gs[name] != delta:
+                print(f"  GuildStats {name}: {gs[name]} ≠ oficial {delta}")
+                return None
+            ok += 1
+    return ok
+
+
 def main():
-    # dia do jogo: a leitura feita depois do server save traz a XP do dia anterior
-    today = (datetime.now(timezone.utc) - timedelta(hours=9) - timedelta(days=1)).strftime("%Y-%m-%d")
+    now = datetime.now(timezone.utc)
+    ss = last_ss(now)
+    ss_day = ss.astimezone(ZoneInfo("Europe/Berlin")).date()
+    # o arquivo leva a data do dia jogado: a leitura do SS de D traz o XP até o fim de D-1
+    today = (ss_day - timedelta(days=1)).isoformat()
+    yday = (ss_day - timedelta(days=2)).isoformat()
+    print(f"server save {iso(ss)} · dia jogado {today}")
     cfg = load_config()
     pt_world = cfg.get("world") or "Collabra"
     worlds = [w for w in (cfg.get("worlds") or []) if w]
     if pt_world not in worlds:
         worlds.insert(0, pt_world)
     chars = cfg.get("chars") or []
-    stamp = None
-    lines_by_world = {}
 
-    # 1) ranking top 500 de cada servidor
+    # 1) ranking top 500 de cada servidor (só páginas de depois do SS)
+    lines_by_world = {}
     for w in worlds:
-        rows = []
-        for n in range(1, 11):
-            lst, ts = page(w, "experience", n)
-            if lst is None:
-                rows = None
-                break
-            stamp = stamp or ts
-            rows += lst
-            if len(lst) < 50:
-                break
-        if not rows:
-            print(f"{w}: sem dados, pulando")
-            continue
-        lines_by_world[w] = rows
-        folder = os.path.join(DATA, "srv", w)
-        os.makedirs(folder, exist_ok=True)
-        with open(os.path.join(folder, today + ".txt"), "w", encoding="utf-8") as f:
-            for r in rows:
-                f.write(f"{r['rank']}|{r['name']}|{r['vocation']}|{r['level']}|{r['value']}\n")
-        print(f"{w}: {len(rows)} linhas")
+        rows = read_world(w, today, ss)
+        if rows:
+            lines_by_world[w] = rows
 
     idx_path = os.path.join(DATA, "srv", "index.json")
-    idx = json.load(open(idx_path)) if os.path.exists(idx_path) else {}
-    for w in lines_by_world:
-        ds = set(idx.get(w, []))
-        ds.add(today)
-        idx[w] = sorted(ds)
-    # apaga leituras com mais de 40 dias
-    limit = (datetime.now(timezone.utc) - timedelta(days=40)).strftime("%Y-%m-%d")
+    idx = load_json(idx_path, {})
+    for w in worlds:
+        if os.path.exists(os.path.join(DATA, "srv", w, today + ".txt")):
+            idx[w] = sorted(set(idx.get(w, [])) | {today})
+    limit = (now - timedelta(days=40)).strftime("%Y-%m-%d")
     for w, ds in idx.items():
         for d in [d for d in ds if d < limit]:
             p = os.path.join(DATA, "srv", w, d + ".txt")
             if os.path.exists(p):
                 os.remove(p)
         idx[w] = [d for d in ds if d >= limit]
-    json.dump(idx, open(idx_path, "w"), indent=0)
+    save_json(idx_path, idx, indent=0)
 
-    # 1b) ranking pronto do GuildStats (ontem, 7 e 30 dias)
-    for w in worlds:
-        gs = guildstats_rank(w)
-        if gs:
-            os.makedirs(os.path.join(DATA, "gsrank"), exist_ok=True)
-            json.dump({"world": w, "date": today, "source": "guildstats", **gs},
-                      open(os.path.join(DATA, "gsrank", w + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
-            print(f"{w}: GuildStats ok")
-
-    # 2) XP e skill dos chars da PT
-    found = {}
-    want = {c["name"].lower(): c["name"] for c in chars if c.get("name")}
-    pool = list(lines_by_world.get(pt_world, []))
-    n = 11
-    while True:
-        for r in pool:
-            k = r["name"].lower()
-            if k in want and want[k] not in found:
-                found[want[k]] = {"exp": int(r["value"]), "level": int(r["level"])}
-        if len(found) == len(want) or n > 20:
-            break
-        lst, _ = page(pt_world, "experience", n)
-        if not lst:
-            break
-        pool = lst
-        n += 1
+    # 2) XP e skill dos chars da PT (chars já gravados hoje ficam como estão)
+    sp = os.path.join(DATA, "snaps.json")
+    snaps = load_json(sp, {})
+    snap = snaps.get(today) or {}
+    have = dict(snap.get("chars") or {})
+    want = {c["name"].lower(): c["name"] for c in chars if c.get("name") and c["name"] not in have}
+    found, at_max = {}, None
+    for r in lines_by_world.get(pt_world, []):
+        k = r["name"].lower()
+        if k in want and want[k] not in found:
+            found[want[k]] = {"exp": int(r["value"]), "level": int(r["level"])}
+    top_done = os.path.exists(os.path.join(DATA, "srv", pt_world, today + ".txt"))
+    if want and len(found) < len(want) and top_done:
+        for n in range(11, 21):
+            lst, at = page(pt_world, "experience", n)
+            if lst is None or not at or at < ss:
+                print(f"{pt_world} p{n}: sem dado válido")
+                break
+            at_max = max(at_max or at, at)
+            for r in lst:
+                k = r["name"].lower()
+                if k in want and want[k] not in found:
+                    found[want[k]] = {"exp": int(r["value"]), "level": int(r["level"]), "at": iso(at)}
+            if len(found) == len(want) or len(lst) < 50:
+                break
 
     cats = {}
     for c in chars:
@@ -200,13 +336,47 @@ def main():
                 break
 
     if found:
-        sp = os.path.join(DATA, "snaps.json")
-        snaps = json.load(open(sp, encoding="utf-8")) if os.path.exists(sp) else {}
-        snaps[today] = {"source": "tibiadata", "fetchedAt": stamp, "chars": found}
-        json.dump(dict(sorted(snaps.items())), open(sp, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
-    json.dump({"updatedAt": stamp or datetime.now(timezone.utc).isoformat(), "date": today},
-              open(os.path.join(DATA, "status.json"), "w"))
-    print("PT:", ", ".join(f"{k} {v['level']}" for k, v in found.items()) or "nenhum char achado")
+        have.update(found)
+        snaps[today] = {"source": "tibiadata", "ss": iso(ss),
+                        "fetchedAt": iso(at_max or now), "chars": have}
+        save_json(sp, dict(sorted(snaps.items())), indent=0)
+        print("PT:", ", ".join(f"{k} {v['level']}" for k, v in found.items()))
+    else:
+        print("PT: nada novo" if not want else "PT: chars ainda sem dado válido")
+
+    # 3) GuildStats: só grava se a XP dele bater com a diferença oficial entre dois SS
+    for w in worlds:
+        gp = os.path.join(DATA, "gsrank", w + ".json")
+        old = load_json(gp, {})
+        if old.get("date") == today and old.get("checked"):
+            continue
+        pairs = {}
+        if w == pt_world:
+            a, b = (snaps.get(yday) or {}).get("chars") or {}, (snaps.get(today) or {}).get("chars") or {}
+            for n in b:
+                if n in a and b[n].get("exp") and a[n].get("exp"):
+                    pairs[n.lower()] = b[n]["exp"] - a[n]["exp"]
+        a, b = read_srv(w, yday), read_srv(w, today)
+        for n in list(b)[:30]:
+            if n in a:
+                pairs.setdefault(n, b[n] - a[n])
+        pt_n = sum(1 for c in chars if c.get("name")) if w == pt_world else 0
+        need = min(3, pt_n) if 0 < pt_n < 3 else 3
+        if len(pairs) < need:
+            print(f"{w}: sem pares para conferir o GuildStats ainda")
+            continue
+        gs = guildstats_rank(w)
+        if not gs:
+            continue
+        ok = check_gs(gs["d1"], pairs)
+        if not ok or ok < need:
+            print(f"{w}: GuildStats ainda com o dia anterior ou incompleto, não gravado")
+            continue
+        save_json(gp, {"world": w, "date": today, "source": "guildstats", "checked": ok, **gs})
+        print(f"{w}: GuildStats gravado ({ok} nomes conferidos)")
+
+    save_json(os.path.join(DATA, "status.json"),
+              {"updatedAt": iso(now), "ss": iso(ss), "date": today})
 
 
 if __name__ == "__main__":
