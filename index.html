@@ -639,19 +639,25 @@ $("vendas").addEventListener("click",async e=>{const b=e.target.closest("button[
   try{await S.db.doc("vendas/"+id).delete();vendMsg("Item apagado",true)}catch(err){vendErr(err)}});
 
 /* atualização manual: busca o highscore direto da API e grava no Firebase */
-async function hsPage(w,cat,n){const r=await fetch(`https://api.tibiadata.com/v4/highscores/${encodeURIComponent(w)}/${cat}/all/${n}`);if(!r.ok)throw new Error("API "+r.status);const j=await r.json();return{list:(j.highscores&&j.highscores.highscore_list)||[],ts:j.information&&j.information.timestamp}}
+async function hsPage(w,cat,n){const r=await fetch(`https://api.tibiadata.com/v4/highscores/${encodeURIComponent(w)}/${cat}/all/${n}`);if(!r.ok)throw new Error("API "+r.status);const j=await r.json();const hs=j.highscores||{},ts=j.information&&j.information.timestamp;
+  const at=ts?new Date(new Date(ts).getTime()-(+hs.highscore_age||0)*6e4):null;return{list:hs.highscore_list||[],ts,at}}
+/* mesma regra da leitura automática: só vale página com dado de depois do server save; nada já gravado é substituído */
 async function atualizarAgora(){const btn=$("syncBtn");if(btn.disabled)return;btn.disabled=true;const say=t=>btn.textContent=t;
-  try{const today=gameDay(),pw=ptWorld();let stamp=null;const rowsBy={};const ws=worlds();
-    for(const w of ws){let rows=[];for(let n=1;n<=10;n++){say(`${w} ${n*10}%`);const p=await hsPage(w,"experience",n);stamp=stamp||p.ts;rows=rows.concat(p.list);if(p.list.length<50)break}
+  try{const today=gameDay(),ss=ssAt(iso(new Date(toDate(today).getTime()+dayMs))),pw=ptWorld(),ok=p=>p.at&&p.at>=ss;const rowsBy={},msg=[];const ws=worlds();
+    for(const w of ws){const ref=S.db.doc(`srv/${w}/days/${today}`);const ex=await ref.get();
+      if(ex.exists&&ex.data().ss){rowsBy[w]=String(ex.data().raw).split("\n").map(l=>{const a=l.split("|");return{rank:+a[0],name:a[1],vocation:a[2],level:+a[3],value:+a[4]}});continue}
+      let rows=[],stale=0;for(let n=1;n<=10;n++){say(`${w} ${n*10}%`);const p=await hsPage(w,"experience",n);if(!ok(p)){stale++;continue}rows=rows.concat(p.list);if(p.list.length<50)break}
+      if(stale){msg.push(`${w}: ${stale} página(s) ainda sem o server save`);continue}
       if(!rows.length)continue;rowsBy[w]=rows;
-      await S.db.doc(`srv/${w}/days/${today}`).set({date:today,source:"manual",fetchedAt:stamp||new Date().toISOString(),raw:rows.map(r=>`${r.rank}|${r.name}|${r.vocation}|${r.level}|${r.value}`).join("\n")})}
-    say("PT…");const want=new Map((S.cfg.chars||[]).map(c=>[c.name.toLowerCase(),c]));const found={};
-    let pool=rowsBy[pw]||[],n=11;while(true){pool.forEach(r=>{const c=want.get(r.name.toLowerCase());if(c&&!found[c.name])found[c.name]={exp:+r.value,level:+r.level}});
-      if(Object.keys(found).length>=want.size||n>20)break;const p=await hsPage(pw,"experience",n++);if(!p.list.length)break;pool=p.list}
+      await ref.set({date:today,source:"manual",ss:ss.toISOString(),fetchedAt:new Date().toISOString(),raw:rows.map(r=>`${r.rank}|${r.name}|${r.vocation}|${r.level}|${r.value}`).join("\n")})}
+    say("PT…");const sref=S.db.doc("snaps/"+today),sx=await sref.get(),have=(sx.exists&&sx.data().ss&&sx.data().chars)||{};
+    const want=new Map((S.cfg.chars||[]).filter(c=>!have[c.name]).map(c=>[c.name.toLowerCase(),c]));const found={};
+    let pool=rowsBy[pw]||[],n=11;while(want.size&&rowsBy[pw]){pool.forEach(r=>{const c=want.get(r.name.toLowerCase());if(c&&!found[c.name])found[c.name]={exp:+r.value,level:+r.level}});
+      if(Object.keys(found).length>=want.size||n>20)break;const p=await hsPage(pw,"experience",n++);if(!ok(p)||!p.list.length)break;pool=p.list}
     const cats={};(S.cfg.chars||[]).forEach(c=>{if(c.skillCat&&found[c.name])(cats[c.skillCat]=cats[c.skillCat]||[]).push(c.name)});
     for(const [cat,names] of Object.entries(cats)){const left=new Map(names.map(x=>[x.toLowerCase(),x]));for(let p=1;p<=3&&left.size;p++){const r=await hsPage(pw,cat,p);r.list.forEach(e=>{const k=e.name.toLowerCase();if(left.has(k)){found[left.get(k)].skill=+e.value;left.delete(k)}});if(!r.list.length)break}}
-    if(Object.keys(found).length)await S.db.doc("snaps/"+today).set({source:"manual",fetchedAt:stamp||new Date().toISOString(),chars:found,by:(S.user&&S.user.email)||""});
-    S.subs={};S.srv={};syncSubs();say("Atualizado ✔");setTimeout(()=>say("Atualizar agora"),3000)}
+    if(Object.keys(found).length)await sref.set({source:"manual",ss:ss.toISOString(),fetchedAt:new Date().toISOString(),chars:{...have,...found},by:(S.user&&S.user.email)||""});
+    S.subs={};S.srv={};syncSubs();say(msg.length?"Highscore ainda não virou":"Atualizado ✔");if(msg.length)vendMsg(msg.join(" · ")+". Tente de novo mais tarde.");setTimeout(()=>say("Atualizar agora"),4000)}
   catch(e){say("Falhou");vendMsg("Atualização falhou: "+(e.code==="permission-denied"?"sua conta não é administradora":(e.message||e)));setTimeout(()=>say("Atualizar agora"),3000)}
   finally{btn.disabled=false}}
 /* dados: arquivos do repositório + Firebase para o que é editável */
