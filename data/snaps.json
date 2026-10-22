@@ -1469,7 +1469,7 @@
 },
 "2026-10-20": {
 "source": "tibiadata",
-"fetchedAt": "2026-10-21T20:44:06Z",
+"fetchedAt": "2026-10-22T00:00:26Z",
 "chars": {
 "Gabz Implacavel": {
 "exp": 193248745495,
@@ -1487,28 +1487,28 @@
 "skill": 134
 },
 "Kipersz": {
-"exp": 154101796855,
-"level": 2100,
+"exp": 154144522649,
+"level": 2101,
 "skill": 132
 },
 "Gastlyy": {
-"exp": 55777177045,
-"level": 1497,
+"exp": 55849320945,
+"level": 1498,
 "skill": 135
 },
 "Dugzera": {
-"exp": 53267636863,
+"exp": 53333497113,
 "level": 1475,
 "skill": 129
 },
 "Dymyyy": {
-"exp": 34258602146,
-"level": 1273,
+"exp": 34336220107,
+"level": 1274,
 "skill": 126
 },
 "Gabz Empacado": {
-"exp": 18271633000,
-"level": 1033,
+"exp": 18354437035,
+"level": 1034,
 "skill": 119
 }
 }
