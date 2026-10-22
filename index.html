@@ -184,6 +184,30 @@ button:disabled{opacity:.7;cursor:default}
 .rkt tbody tr:nth-child(1).top3 td.p::before{background:radial-gradient(circle at 35% 35%,#fff6c2,#e3b75a 60%,#8a6418)}
 .rkt tbody tr:nth-child(2).top3 td.p::before{background:radial-gradient(circle at 35% 35%,#fff,#c8c8c8 60%,#6d6d6d)}
 .rkt tbody tr:nth-child(3).top3 td.p::before{background:radial-gradient(circle at 35% 35%,#ffd9b3,#c07a3b 60%,#6d3f17)}
+
+/* ===== Visual do Tibia.com: faixa verde, céu noturno e botões azuis/verdes ===== */
+body{background-color:#0b1424;
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201600%20420%22%20preserveAspectRatio%3D%22xMidYMax%20slice%22%3E%0A%3Cdefs%3E%3CradialGradient%20id%3D%22m%22%20cx%3D%2250%25%22%20cy%3D%2250%25%22%20r%3D%2250%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f4f1e6%22/%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23d9d6cc%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23d9d6cc%22%20stop-opacity%3D%220%22/%3E%3C/radialGradient%3E%0A%3ClinearGradient%20id%3D%22f%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%235d6a86%22%20stop-opacity%3D%22.0%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%233a4560%22%20stop-opacity%3D%22.55%22/%3E%3C/linearGradient%3E%3C/defs%3E%0A%3Ccircle%20cx%3D%22380%22%20cy%3D%22120%22%20r%3D%22110%22%20fill%3D%22url%28%23m%29%22%20opacity%3D%22.55%22/%3E%3Ccircle%20cx%3D%22380%22%20cy%3D%22120%22%20r%3D%2246%22%20fill%3D%22%23ece8dc%22%20opacity%3D%22.9%22/%3E%0A%3Cpath%20d%3D%22M0%20300%20L120%20210%20L210%20260%20L330%20150%20L430%20240%20L520%20190%20L640%20270%20L760%20170%20L880%20250%20L1000%20140%20L1120%20230%20L1240%20180%20L1360%20260%20L1480%20200%20L1600%20250%20L1600%20420%20L0%20420Z%22%20fill%3D%22%2346526e%22%20opacity%3D%22.75%22/%3E%0A%3Cpath%20d%3D%22M0%20340%20L90%20290%20L200%20330%20L300%20260%20L420%20320%20L560%20250%20L700%20330%20L820%20280%20L960%20340%20L1080%20270%20L1220%20330%20L1340%20290%20L1460%20340%20L1600%20300%20L1600%20420%20L0%20420Z%22%20fill%3D%22%232c3550%22%20opacity%3D%22.9%22/%3E%0A%3Cpath%20d%3D%22M0%20380%20L150%20350%20L300%20375%20L480%20340%20L640%20372%20L820%20345%20L1000%20378%20L1180%20350%20L1360%20376%20L1600%20352%20L1600%20420%20L0%20420Z%22%20fill%3D%22%231a2238%22/%3E%0A%3Crect%20width%3D%221600%22%20height%3D%22420%22%20fill%3D%22url%28%23f%29%22/%3E%3C/svg%3E"),linear-gradient(180deg,#8f9bb3 0,#6d7a96 160px,#3b4763 330px,#121b2e 420px,#0b1424 640px);
+  background-repeat:no-repeat;background-size:100% 420px,100% 100%;background-position:top center,0 0}
+.top{background:linear-gradient(180deg,#2f5a1e,#1d3d10 55%,#14300a);border:2px solid #c9a34a;box-shadow:inset 0 1px 0 rgba(255,240,170,.35),inset 0 -2px 0 rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.5);
+  border-radius:3px;padding:10px 14px;margin-top:6px}
+h1{color:#f5c542;text-shadow:2px 2px 0 #3a1d00,-1px -1px 0 #7a4a00,0 0 16px rgba(245,197,66,.45)}
+.world{color:#e9dfb8}
+/* botão azul com moldura dourada */
+.tab,.ptbtn,button{color:#fff;font-weight:700;text-shadow:1px 1px 0 #000;border:2px solid #c9a34a;border-radius:3px;
+  background:linear-gradient(180deg,#5b86e0 0,#2a55b8 45%,#173a8c 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 0 rgba(0,0,0,.35),0 0 0 1px #3d2a00,0 2px 4px rgba(0,0,0,.45)}
+.tab:hover,.ptbtn:hover,button:hover{filter:brightness(1.15)}
+/* verde: aba ativa e ações */
+.tab[aria-selected="true"],.ptbtn[aria-pressed="true"],button[type="submit"],#syncBtn{
+  background:linear-gradient(180deg,#7fd04f 0,#3f9a24 45%,#226b12 100%);color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -2px 0 rgba(0,0,0,.35),0 0 0 1px #3d2a00,0 0 8px rgba(245,197,66,.35)}
+#authBtn{background:linear-gradient(180deg,#fdf6e3,#e8dcbc);color:#3a2408;text-shadow:none;border:2px solid #c9a34a}
+button.x,button.x:hover{background:transparent;border:none;box-shadow:none;text-shadow:none;color:var(--dim);filter:none}
+button.x:hover{color:var(--bad)}
+.chip{border:1px solid #c9a34a}
+.ptbar span{color:#f5e6b8;text-shadow:1px 1px 0 #000}
+@media (max-width:560px){.top{padding:10px}}
 </style>
 
 </head><body>
