@@ -364,6 +364,7 @@ def main():
 
     # 3) GuildStats: só grava se a XP dele bater com a diferença oficial entre dois SS
     gs_status = {}
+    pt_names_fb = set()
     for w in worlds:
         gp = os.path.join(DATA, "gsrank", w + ".json")
         old = load_json(gp, {})
@@ -377,6 +378,7 @@ def main():
                 c.update((fs_doc(f"snaps/{day}") or {}).get("chars") or {})
                 return c
             a, b = snap_chars(yday), snap_chars(today)
+            pt_names_fb = {n.lower() for n in (fs_doc(f"snaps/{yday}") or {}).get("chars", {}) if n in b}
             for n in b:
                 if n in a and b[n].get("exp") and a[n].get("exp"):
                     pairs[n.lower()] = b[n]["exp"] - a[n]["exp"]
@@ -396,6 +398,14 @@ def main():
             continue
         why = []
         ok = check_gs(gs["d1"], pairs, why)
+        # aceite manual de um dia (workflow "Run workflow" com a data): exige que os chars da PT batam exatamente
+        if not ok and os.environ.get("ACEITAR_GS", "").strip() == today and w == pt_world:
+            pt_pairs = {c["name"].lower(): pairs[c["name"].lower()] for c in chars
+                        if c.get("name") and c["name"].lower() in pt_names_fb}
+            ok_pt = check_gs(gs["d1"], pt_pairs) if len(pt_pairs) >= 3 else None
+            if ok_pt and ok_pt == len(pt_pairs):
+                ok = ok_pt
+                why.append("aceito manualmente: chars da PT conferidos")
         if not ok or ok < need:
             gs_status[w] = "não gravado: " + " | ".join(why)
             print(f"{w}: {gs_status[w]}")

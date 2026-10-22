@@ -17,7 +17,12 @@ on:
   push:
     branches: [main]
     paths: ["scripts/**", ".github/workflows/**"]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      aceitar_gs:
+        description: "Aceitar o GuildStats deste dia jogado (AAAA-MM-DD), se os chars da PT baterem"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -37,6 +42,7 @@ jobs:
       - name: Ler highscore
         env:
           FIREBASE_PROJECT: pt-dream
+          ACEITAR_GS: ${{ github.event.inputs.aceitar_gs }}
         run: python scripts/update.py
       - name: Salvar
         run: |
