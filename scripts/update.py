@@ -236,7 +236,7 @@ def read_world(world, day, ss):
     return [dict(zip(("rank", "name", "vocation", "level", "value"), x.split("|"))) for x in rows]
 
 
-def check_gs(gs_d1, pairs):
+def check_gs(gs_d1, pairs, why=None):
     """Confere a XP do GuildStats com a diferença oficial. Devolve quantos nomes bateram ou None."""
     gs = {}
     for l in gs_d1.splitlines():
@@ -246,14 +246,19 @@ def check_gs(gs_d1, pairs):
                 gs[p[0].lower()] = int(p[2])
             except ValueError:
                 pass
-    ok = 0
+    ok, bad = 0, []
     for name, delta in pairs.items():
         if name in gs:
             if gs[name] != delta:
-                print(f"  GuildStats {name}: {gs[name]} ≠ oficial {delta}")
-                return None
-            ok += 1
-    return ok
+                bad.append(f"{name}: GuildStats {gs[name]} x oficial {delta}")
+            else:
+                ok += 1
+    if why is not None:
+        why.extend(bad[:6])
+        why.append(f"{ok} bateram, {len(bad)} não bateram, {len(gs)} linhas no GuildStats")
+    for b in bad[:6]:
+        print("  " + b)
+    return None if bad else ok
 
 
 def main():
@@ -372,9 +377,10 @@ def main():
         if not gs:
             gs_status[w] = "site do GuildStats não respondeu ou bloqueou"
             continue
-        ok = check_gs(gs["d1"], pairs)
+        why = []
+        ok = check_gs(gs["d1"], pairs, why)
         if not ok or ok < need:
-            gs_status[w] = "lista ainda do dia anterior ou incompleta, não gravado"
+            gs_status[w] = "não gravado: " + " | ".join(why)
             print(f"{w}: {gs_status[w]}")
             continue
         gs_status[w] = f"gravado ({ok} nomes conferidos)"
