@@ -345,10 +345,12 @@ def main():
         print("PT: nada novo" if not want else "PT: chars ainda sem dado válido")
 
     # 3) GuildStats: só grava se a XP dele bater com a diferença oficial entre dois SS
+    gs_status = {}
     for w in worlds:
         gp = os.path.join(DATA, "gsrank", w + ".json")
         old = load_json(gp, {})
         if old.get("date") == today and old.get("checked"):
+            gs_status[w] = f"já gravado ({old['checked']} nomes conferidos)"
             continue
         pairs = {}
         if w == pt_world:
@@ -363,20 +365,24 @@ def main():
         pt_n = sum(1 for c in chars if c.get("name")) if w == pt_world else 0
         need = min(3, pt_n) if 0 < pt_n < 3 else 3
         if len(pairs) < need:
-            print(f"{w}: sem pares para conferir o GuildStats ainda")
+            gs_status[w] = "sem dados de ontem e hoje para conferir"
+            print(f"{w}: {gs_status[w]}")
             continue
         gs = guildstats_rank(w)
         if not gs:
+            gs_status[w] = "site do GuildStats não respondeu ou bloqueou"
             continue
         ok = check_gs(gs["d1"], pairs)
         if not ok or ok < need:
-            print(f"{w}: GuildStats ainda com o dia anterior ou incompleto, não gravado")
+            gs_status[w] = "lista ainda do dia anterior ou incompleta, não gravado"
+            print(f"{w}: {gs_status[w]}")
             continue
+        gs_status[w] = f"gravado ({ok} nomes conferidos)"
         save_json(gp, {"world": w, "date": today, "source": "guildstats", "checked": ok, **gs})
         print(f"{w}: GuildStats gravado ({ok} nomes conferidos)")
 
     save_json(os.path.join(DATA, "status.json"),
-              {"updatedAt": iso(now), "ss": iso(ss), "date": today})
+              {"updatedAt": iso(now), "ss": iso(ss), "date": today, "guildstats": gs_status})
 
 
 if __name__ == "__main__":
