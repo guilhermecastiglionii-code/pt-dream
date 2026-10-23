@@ -274,7 +274,19 @@ def check_gs(gs_d1, pairs, why=None):
     return None if bad else ok
 
 
+def wait_for_ss():
+    """Se o próximo server save está a menos de 3 h, espera ele acontecer (+4 min).
+    O GitHub atrasa as rodadas agendadas por horas; por isso a rodada começa antes e espera aqui."""
+    now = datetime.now(timezone.utc)
+    nxt = ss_at(now.astimezone(ZoneInfo("Europe/Berlin")).date().isoformat())
+    if now < nxt and nxt - now < timedelta(hours=3):
+        wait = (nxt - now + timedelta(minutes=4)).total_seconds()
+        print(f"esperando o server save ({iso(nxt)}): {int(wait // 60)} min")
+        time.sleep(wait)
+
+
 def main():
+    wait_for_ss()
     now = datetime.now(timezone.utc)
     ss = last_ss(now)
     ss_day = ss.astimezone(ZoneInfo("Europe/Berlin")).date()
@@ -290,11 +302,18 @@ def main():
     chars = cfg.get("chars") or []
 
     # 1) ranking top 500 de cada servidor (só páginas de depois do SS)
-    lines_by_world = {}
-    for w in worlds:
-        rows = read_world(w, today, ss)
-        if rows:
-            lines_by_world[w] = rows
+    # lê de novo a cada 4 min até todas as páginas virarem (no máximo 2h30 depois do SS)
+    while True:
+        lines_by_world = {}
+        for w in worlds:
+            rows = read_world(w, today, ss)
+            if rows:
+                lines_by_world[w] = rows
+        done = all(os.path.exists(os.path.join(DATA, "srv", w, today + ".txt")) for w in worlds)
+        if done or datetime.now(timezone.utc) > ss + timedelta(minutes=150):
+            break
+        print("páginas ainda sem o server save, nova tentativa em 4 min")
+        time.sleep(240)
 
     idx_path = os.path.join(DATA, "srv", "index.json")
     idx = load_json(idx_path, {})

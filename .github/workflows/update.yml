@@ -2,17 +2,16 @@ name: Atualizar dados
 
 on:
   schedule:
-    # 5 leituras por dia depois do server save (10h de Berlim): 40 min, 1h40, 3h40, 5h40 e 8h40 depois.
-    # O cron do GitHub é em UTC; a lista cobre horário de verão e de inverno de Berlim.
-    # Cada rodada só completa o que falta; antes do server save ou com tudo pronto, não muda nada.
-    - cron: "40 8 * * *"
+    # O GitHub atrasa rodadas agendadas (às vezes horas). Por isso há rodadas ANTES do server save
+    # (10h de Berlim = 08:00 UTC no verão europeu, 09:00 UTC no inverno): o script espera o SS
+    # e lê o highscore assim que vira. As rodadas da tarde só completam o que faltar.
+    - cron: "17 5 * * *"
+    - cron: "17 6 * * *"
+    - cron: "17 7 * * *"
+    - cron: "17 8 * * *"
     - cron: "40 9 * * *"
-    - cron: "40 10 * * *"
     - cron: "40 11 * * *"
-    - cron: "40 12 * * *"
-    - cron: "40 13 * * *"
     - cron: "40 14 * * *"
-    - cron: "40 16 * * *"
     - cron: "40 17 * * *"
   push:
     branches: [main]
@@ -34,6 +33,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 340
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -50,4 +50,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add data
           git diff --cached --quiet || git commit -m "Dados de $(TZ=America/Sao_Paulo date +%d/%m/%Y)"
+          git pull --rebase -X theirs origin main || true
           git push
