@@ -3,11 +3,11 @@
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Painel da PT Dream no Tibia (Collabra): level, XP diária, metas, ranking do servidor e vendas.">
-<style>*,*::before,*::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}html{background:#051122;min-height:100%}</style>
+<style>*,*::before,*::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}html{background:#070b09;min-height:100%}</style>
 <title>PT Dream Collabra</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martel:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martel:wght@700;800&family=Cinzel:wght@700;900&display=swap">
 <style>
 /* Layout: igual ao Tibia.com — fundo azul-noite do site, caixas de pergaminho com faixa de título marrom, tabelas com linhas alternadas bege. Tema único, de propósito. */
 :root{
@@ -185,38 +185,100 @@ button:disabled{opacity:.7;cursor:default}
 .rkt tbody tr:nth-child(2).top3 td.p::before{background:radial-gradient(circle at 35% 35%,#fff,#c8c8c8 60%,#6d6d6d)}
 .rkt tbody tr:nth-child(3).top3 td.p::before{background:radial-gradient(circle at 35% 35%,#ffd9b3,#c07a3b 60%,#6d3f17)}
 
-/* ===== Visual do Tibia.com: faixa verde, céu noturno e botões azuis/verdes ===== */
-body{background-color:#0b1424;
-  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201600%20420%22%20preserveAspectRatio%3D%22xMidYMax%20slice%22%3E%0A%3Cdefs%3E%3CradialGradient%20id%3D%22m%22%20cx%3D%2250%25%22%20cy%3D%2250%25%22%20r%3D%2250%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f4f1e6%22/%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23d9d6cc%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23d9d6cc%22%20stop-opacity%3D%220%22/%3E%3C/radialGradient%3E%0A%3ClinearGradient%20id%3D%22f%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%235d6a86%22%20stop-opacity%3D%22.0%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%233a4560%22%20stop-opacity%3D%22.55%22/%3E%3C/linearGradient%3E%3C/defs%3E%0A%3Ccircle%20cx%3D%22380%22%20cy%3D%22120%22%20r%3D%22110%22%20fill%3D%22url%28%23m%29%22%20opacity%3D%22.55%22/%3E%3Ccircle%20cx%3D%22380%22%20cy%3D%22120%22%20r%3D%2246%22%20fill%3D%22%23ece8dc%22%20opacity%3D%22.9%22/%3E%0A%3Cpath%20d%3D%22M0%20300%20L120%20210%20L210%20260%20L330%20150%20L430%20240%20L520%20190%20L640%20270%20L760%20170%20L880%20250%20L1000%20140%20L1120%20230%20L1240%20180%20L1360%20260%20L1480%20200%20L1600%20250%20L1600%20420%20L0%20420Z%22%20fill%3D%22%2346526e%22%20opacity%3D%22.75%22/%3E%0A%3Cpath%20d%3D%22M0%20340%20L90%20290%20L200%20330%20L300%20260%20L420%20320%20L560%20250%20L700%20330%20L820%20280%20L960%20340%20L1080%20270%20L1220%20330%20L1340%20290%20L1460%20340%20L1600%20300%20L1600%20420%20L0%20420Z%22%20fill%3D%22%232c3550%22%20opacity%3D%22.9%22/%3E%0A%3Cpath%20d%3D%22M0%20380%20L150%20350%20L300%20375%20L480%20340%20L640%20372%20L820%20345%20L1000%20378%20L1180%20350%20L1360%20376%20L1600%20352%20L1600%20420%20L0%20420Z%22%20fill%3D%22%231a2238%22/%3E%0A%3Crect%20width%3D%221600%22%20height%3D%22420%22%20fill%3D%22url%28%23f%29%22/%3E%3ClinearGradient%20id%3D%22b%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%230b1424%22%20stop-opacity%3D%220%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230b1424%22/%3E%3C/linearGradient%3E%3Crect%20y%3D%22300%22%20width%3D%221600%22%20height%3D%22120%22%20fill%3D%22url%28%23b%29%22/%3E%3C/svg%3E"),linear-gradient(180deg,#8f9bb3 0,#6d7a96 160px,#3b4763 300px,#0b1424 420px,#0b1424 100%);
-  background-repeat:no-repeat;background-size:100% 420px,100% 420px;background-position:top center,0 0}
-.top{background:linear-gradient(180deg,#2f5a1e,#1d3d10 55%,#14300a);border:2px solid #c9a34a;box-shadow:inset 0 1px 0 rgba(255,240,170,.35),inset 0 -2px 0 rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.5);
-  border-radius:3px;padding:10px 14px;margin-top:6px}
-h1{color:#f5c542;text-shadow:2px 2px 0 #3a1d00,-1px -1px 0 #7a4a00,0 0 16px rgba(245,197,66,.45)}
-.world{color:#e9dfb8}
-/* botão azul com moldura dourada */
-.tab,.ptbtn,button{color:#fff;font-weight:700;text-shadow:1px 1px 0 #000;border:2px solid #c9a34a;border-radius:3px;
-  background:linear-gradient(180deg,#5b86e0 0,#2a55b8 45%,#173a8c 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 0 rgba(0,0,0,.35),0 0 0 1px #3d2a00,0 2px 4px rgba(0,0,0,.45)}
-.tab:hover,.ptbtn:hover,button:hover{filter:brightness(1.15)}
-/* verde: aba ativa e ações */
-.tab[aria-selected="true"],.ptbtn[aria-pressed="true"],button[type="submit"],#syncBtn{
-  background:linear-gradient(180deg,#7fd04f 0,#3f9a24 45%,#226b12 100%);color:#fff;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -2px 0 rgba(0,0,0,.35),0 0 0 1px #3d2a00,0 0 8px rgba(245,197,66,.35)}
-#authBtn{background:linear-gradient(180deg,#fdf6e3,#e8dcbc);color:#3a2408;text-shadow:none;border:2px solid #c9a34a}
+/* ===== Arte PT Dream: masmorra escura, painéis verde-escuros com moldura dourada ===== */
+:root{color-scheme:dark;
+  --parch:#101a14;--parch-2:#15231a;--parch-3:#0c140f;--sunk:#1b2b20;
+  --cap:#1d2f22;--cap-2:#0f1a12;--cap-fg:#f5d77a;
+  --edge:#a77a2c;--line:#3c4a2e;--edge-hi:#2a3a26;
+  --fg:#efe3c2;--ink:#f6ecd0;--muted:#b9a97f;--dim:#8a7f63;
+  --link:#ffd25e;--gold:#e7b545;--gold-2:#f0c75a;--head-fg:#f5d77a;
+  --good:#7ddc5b;--warn:#f0b74a;--bad:#ff7a5c;
+  --rp:#5fcf5a;--ed:#56a8ff;--ms:#ff7043;--ek:#d9a54a;--em:#c08cff;
+  --f-display:"Cinzel",Georgia,serif}
+body{background-color:#070b09;color:var(--fg);
+  background-image:radial-gradient(900px 500px at 50% 0,rgba(60,120,70,.18),transparent 70%),
+    radial-gradient(600px 400px at 0 40%,rgba(200,120,30,.06),transparent 70%),
+    radial-gradient(600px 400px at 100% 60%,rgba(180,40,40,.06),transparent 70%),
+    linear-gradient(180deg,#0b120e,#070b09 900px);
+  background-size:auto;background-repeat:no-repeat;background-attachment:fixed}
+.wrap{padding-top:10px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.banner{position:relative;border:2px solid var(--edge);border-radius:4px;overflow:hidden;
+  box-shadow:0 0 0 1px #3a2608,inset 0 0 0 1px rgba(255,220,140,.25),0 8px 24px rgba(0,0,0,.7)}
+.hero-art{width:100%;aspect-ratio:1536/310;background:url("img/banner.jpg") center/cover no-repeat}
+@media (max-width:640px){.hero-art{aspect-ratio:auto;height:150px;background-size:auto 150px}}
+.top{background:linear-gradient(180deg,#14251a,#0c160f);border:2px solid var(--edge);border-radius:3px;padding:8px 12px;margin-top:-4px;
+  box-shadow:inset 0 1px 0 rgba(255,220,140,.18),0 4px 12px rgba(0,0,0,.5)}
+.world{color:#e9d9a8;font-family:var(--f-display);font-weight:700;letter-spacing:.12em;font-size:12px;margin:0}
+/* painéis */
+.win{background:linear-gradient(180deg,#132019,#0c140f);border:2px solid var(--edge);border-radius:4px;
+  box-shadow:0 0 0 1px #2b1c06,inset 0 0 0 1px rgba(255,220,140,.12),inset 0 0 30px rgba(0,0,0,.45),0 6px 16px rgba(0,0,0,.6)}
+.win-t{background:linear-gradient(180deg,#24382a,#16241a 55%,#0f1a12);border-bottom:1px solid var(--edge);color:var(--cap-fg)}
+.win-t h2,.win-t h3{font-family:var(--f-display);font-weight:700;letter-spacing:.05em;color:var(--cap-fg);text-shadow:1px 1px 0 #000,0 0 10px rgba(240,190,80,.25)}
+.win-t .note,.win-t .legend{color:#cdbb8c}
+.kpi span,.stat small,.lvlbox small,label{color:var(--muted)}
+.kpi b,.stat b,.lvlbox b,.sc .big,.rk .v,td{color:var(--ink)}
+.lvlbox b{font-family:var(--f-display);color:#ffd96a;text-shadow:1px 1px 0 #000,0 0 12px rgba(255,200,80,.3)}
+.emb{background:radial-gradient(circle at 50% 40%,#1d2e22,#08100b);border:1px solid var(--edge)}
+.stats{border-color:var(--line)}
+.stat{background:#0e1812;border-color:var(--line)}
+.stat:nth-child(4n+3),.stat:nth-child(4n+4){background:#132219}
+.goal.ok{background:rgba(125,220,91,.10);border-color:rgba(125,220,91,.5)}
+.goal.mid{background:rgba(240,183,74,.10);border-color:rgba(240,183,74,.5)}
+.goal.bad{background:rgba(255,122,92,.10);border-color:rgba(255,122,92,.5)}
+.xpbar{background:#2a0d0a;border:1px solid #000;box-shadow:0 0 0 1px var(--edge)}
+.rk .tr{background:#0a120d;border:1px solid var(--line)}
+.rk .nm{color:var(--link)}
+/* tabelas */
+table{border-color:var(--edge)}
+th,td{border-color:#24331f}
+th{background:#1d2f22;color:var(--cap-fg);font-family:var(--f-display);letter-spacing:.04em}
+tbody tr:nth-child(odd) td{background:#0e1812}
+tbody tr:nth-child(even) td{background:#132219}
+tbody tr:hover td{background:#1e3324}
+.rkt td.n{color:var(--link)}
+.rkt tr.pt td{background:rgba(231,181,69,.18)!important}
+.rkt tr.pt td.n{color:#fff}
+.chart-box{background:#0b130e}
+svg.chart text{fill:#a99a72}
+/* campos */
+input,select{background:#08100b;color:var(--ink);border:1px solid var(--edge);box-shadow:inset 0 1px 3px #000}
+.chip{background:linear-gradient(180deg,#1a2a1f,#0e1812);border:1px solid var(--edge);color:var(--muted)}
+.chip b{color:var(--ink)}
+.wchip,.sc{background:#0e1812;border-color:var(--line);color:var(--ink)}
+.sc h4{font-family:var(--f-display);color:var(--gold-2)}
+.ro{background:rgba(255,122,92,.1);border-color:rgba(255,122,92,.5)}
+.foot{color:#7f765e}
+/* abas como o menu da arte: ícone em cima, nome embaixo */
+.tabs{gap:6px;padding:4px 0 2px}
+.tab{display:grid;justify-items:center;gap:3px;min-width:96px;padding:8px 12px 7px;border:2px solid var(--edge);border-radius:4px;
+  background:linear-gradient(180deg,#14231a,#09110c);color:#f3e6c4;font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;text-shadow:1px 1px 0 #000;
+  box-shadow:0 0 0 1px #2b1c06,inset 0 0 0 1px rgba(255,220,140,.15),inset 0 -8px 16px rgba(0,0,0,.4)}
+.tab img{width:34px;height:33px;border-radius:3px;filter:drop-shadow(0 2px 2px #000)}
+.tab:hover{filter:brightness(1.18)}
+.tab[aria-selected="true"]{background:linear-gradient(180deg,#2c4a2a,#142416);color:#ffe08a;
+  box-shadow:0 0 0 1px #2b1c06,inset 0 0 0 1px rgba(255,220,140,.35),0 0 14px rgba(240,190,80,.35)}
+/* botões dourados/verdes */
+button{color:#fff;font-weight:700;text-shadow:1px 1px 0 #000;border:2px solid var(--edge);border-radius:3px;
+  background:linear-gradient(180deg,#3b5a34,#22391f 50%,#152714);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 0 0 1px #2b1c06}
+button:hover{filter:brightness(1.15)}
+button[type="submit"],#syncBtn,.ptbtn[aria-pressed="true"]{background:linear-gradient(180deg,#7fd04f,#3f9a24 50%,#226b12);color:#fff}
+.ptbtn{font-family:var(--f-display);background:linear-gradient(180deg,#24382a,#122016);color:#f3e6c4;border:2px solid var(--edge)}
+.ptbar span{color:#d8c690;font-family:var(--f-display)}
+#authBtn{background:linear-gradient(180deg,#e9c46a,#b8862e);color:#1d1406;text-shadow:none}
 button.x,button.x:hover{background:transparent;border:none;box-shadow:none;text-shadow:none;color:var(--dim);filter:none}
 button.x:hover{color:var(--bad)}
-.chip{border:1px solid #c9a34a}
-.ptbar span{color:#f5e6b8;text-shadow:1px 1px 0 #000}
-@media (max-width:560px){.top{padding:10px}}
+@media (max-width:560px){.tab{min-width:76px;padding:6px 8px;font-size:10.5px}.tab img{width:28px;height:27px}}
 </style>
 
 </head><body>
 <div class="wrap">
+  <header class="banner">
+    <div class="hero-art" role="img" aria-label="PT Dream · Mundo Collabra"></div>
+    <h1 class="sr">PT Dream</h1>
+  </header>
   <div class="top">
-    <div class="brand">
-      <svg class="crest" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3 42 10v14c0 11-8 18-18 21C14 42 6 35 6 24V10z" fill="#5f4d41" stroke="#e9c46a" stroke-width="2"/><path d="M24 11l3.2 7.4 8 .6-6.1 5.2 1.9 7.8L24 27.8 17 32l1.9-7.8-6.1-5.2 8-.6z" fill="#e9c46a"/></svg>
-      <div><h1>PT Dream</h1><div class="world" id="worldSub">Mundo Collabra</div></div>
-    </div>
+    <div class="world" id="worldSub">Mundo Collabra</div>
     <div class="live">
       <span class="chip" id="status"><i class="dot"></i>Carregando…</span>
       <span class="chip" id="ss"><i class="dot" style="background:var(--gold)"></i>Server save</span>
@@ -226,12 +288,12 @@ button.x:hover{color:var(--bad)}
   </div>
 
   <div class="tabs" role="tablist" aria-label="Seções">
-    <button class="tab" role="tab" id="t-painel" aria-controls="p-painel" aria-selected="true">Painel</button>
-    <button class="tab" role="tab" id="t-ranking" aria-controls="p-ranking" aria-selected="false">Ranking</button>
-    <button class="tab" role="tab" id="t-metas" aria-controls="p-metas" aria-selected="false">Metas</button>
-    <button class="tab" role="tab" id="t-boost" aria-controls="p-boost" aria-selected="false">Boost e TC</button>
-    <button class="tab" role="tab" id="t-vendas" aria-controls="p-vendas" aria-selected="false">Vendas</button>
-    <button class="tab" role="tab" id="t-ajustes" aria-controls="p-ajustes" aria-selected="false">Ajustes</button>
+    <button class="tab" role="tab" id="t-painel" aria-controls="p-painel" aria-selected="true"><img src="img/ic-painel.png" alt="" width="34" height="33"><span>Painel</span></button>
+    <button class="tab" role="tab" id="t-ranking" aria-controls="p-ranking" aria-selected="false"><img src="img/ic-ranking.png" alt="" width="34" height="33"><span>Ranking</span></button>
+    <button class="tab" role="tab" id="t-metas" aria-controls="p-metas" aria-selected="false"><img src="img/ic-metas.png" alt="" width="34" height="33"><span>Metas</span></button>
+    <button class="tab" role="tab" id="t-boost" aria-controls="p-boost" aria-selected="false"><img src="img/ic-boost.png" alt="" width="34" height="33"><span>Boost e TC</span></button>
+    <button class="tab" role="tab" id="t-vendas" aria-controls="p-vendas" aria-selected="false"><img src="img/ic-vendas.png" alt="" width="34" height="33"><span>Vendas</span></button>
+    <button class="tab" role="tab" id="t-ajustes" aria-controls="p-ajustes" aria-selected="false"><img src="img/ic-ajustes.png" alt="" width="34" height="33"><span>Ajustes</span></button>
   </div>
 
   <!-- PAINEL -->
