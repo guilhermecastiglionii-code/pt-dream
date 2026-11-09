@@ -2362,7 +2362,7 @@
 "2026-11-08": {
 "source": "tibiadata",
 "ss": "2026-11-09T09:00:00Z",
-"fetchedAt": "2026-11-09T13:43:06Z",
+"fetchedAt": "2026-11-09T16:34:08Z",
 "chars": {
 "Gabz Implacavel": {
 "exp": 197309103612,
@@ -2398,6 +2398,11 @@
 "exp": 19341028793,
 "level": 1052,
 "skill": 119
+},
+"Doctor bruxosz": {
+"exp": 156842833828,
+"level": 2113,
+"skill": 134
 }
 }
 }
