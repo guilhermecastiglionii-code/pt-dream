@@ -2358,5 +2358,47 @@
 "skill": 119
 }
 }
+},
+"2026-11-08": {
+"source": "tibiadata",
+"ss": "2026-11-09T09:00:00Z",
+"fetchedAt": "2026-11-09T13:43:06Z",
+"chars": {
+"Gabz Implacavel": {
+"exp": 197309103612,
+"level": 2281,
+"skill": 139
+},
+"Marcha Implacavel": {
+"exp": 182179484932,
+"level": 2221,
+"skill": 139
+},
+"Kipersz": {
+"exp": 157356122119,
+"level": 2115,
+"skill": 132
+},
+"Gastlyy": {
+"exp": 57078632236,
+"level": 1509,
+"skill": 135
+},
+"Dugzera": {
+"exp": 54635408103,
+"level": 1487,
+"skill": 129
+},
+"Dymyyy": {
+"exp": 35343906862,
+"level": 1286,
+"skill": 126
+},
+"Gabz Empacado": {
+"exp": 19341028793,
+"level": 1052,
+"skill": 119
+}
+}
 }
 }
