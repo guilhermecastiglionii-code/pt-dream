@@ -2533,5 +2533,37 @@
 "skill": 119
 }
 }
+},
+"2026-11-13": {
+"source": "tibiadata",
+"ss": "2026-11-14T09:00:00Z",
+"fetchedAt": "2026-11-14T12:10:19Z",
+"chars": {
+"Gabz Implacavel": {
+"exp": 198456841090,
+"level": 2285,
+"skill": 139
+},
+"Marcha Implacavel": {
+"exp": 183306064651,
+"level": 2225,
+"skill": 139
+},
+"Doctor bruxosz": {
+"exp": 157944208014,
+"level": 2118,
+"skill": 134
+},
+"Kipersz": {
+"exp": 157431267423,
+"level": 2115,
+"skill": 132
+},
+"Gabz Empacado": {
+"exp": 19452529355,
+"level": 1054,
+"skill": 119
+}
+}
 }
 }
