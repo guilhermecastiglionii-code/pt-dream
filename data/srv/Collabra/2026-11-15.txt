@@ -1,0 +1,500 @@
+1|Dolerozs|Elder Druid|2531|269725134023
+2|Zapecao|Master Sorcerer|2481|254086103971
+3|Radizao|Elite Knight|2478|253168146914
+4|Mega Blastodd|Master Sorcerer|2387|226356933765
+5|Zainzao|Elder Druid|2358|218031746340
+6|Gabz Implacavel|Royal Paladin|2287|198974579896
+7|Highwin Egoista|Royal Paladin|2282|197725903898
+8|Maziero Egoista|Elder Druid|2253|190230482323
+9|Thor Zynz|Royal Paladin|2243|187630045506
+10|Kalixtao|Elder Druid|2241|187232808721
+11|Alezon|Royal Paladin|2233|185216252344
+12|Marcha Implacavel|Elder Druid|2228|183930151152
+13|Megazord do Vini|Royal Paladin|2213|180154601107
+14|Rafavinsk|Royal Paladin|2212|179935730909
+15|Tulio Barao|Elite Knight|2206|178543851519
+16|Barelor|Elder Druid|2135|161964381816
+17|Evil Ruan|Master Sorcerer|2124|159384604577
+18|Doctor Bruxosz|Master Sorcerer|2121|158591052528
+19|Kipersz|Elite Knight|2117|157867952785
+20|Jotazovisk|Royal Paladin|2114|157230133196
+21|Gulbassauro|Elder Druid|2098|153552998150
+22|Marugo|Master Sorcerer|2076|148789393585
+23|Neo Enterprise|Royal Paladin|2072|147875392557
+24|Frotaa Junior|Master Sorcerer|2066|146738086338
+25|Zazulejo|Elder Druid|2064|146191233135
+26|Thanatos Celestial|Elder Druid|2055|144402376780
+27|Mael Tadafilado|Elite Knight|2033|139726876383
+28|Kevashi|Master Sorcerer|2016|136156033752
+29|Cael Goat|Elite Knight|2014|135942470714
+30|Gear Five Whisp|Royal Paladin|1991|131293003630
+31|Winy Roven|Elder Druid|1990|130991456371
+32|Kevash|Master Sorcerer|1975|128046477388
+33|Taknelson|Elder Druid|1972|127463633511
+34|Dugzeraz|Master Sorcerer|1962|125679905909
+35|Dim ster|Royal Paladin|1950|123358155346
+36|Koe Psciko|Elite Knight|1933|120009415444
+37|Dolerozz|Elder Druid|1889|112009851015
+38|Guizz Wicked|Elder Druid|1872|109157221309
+39|Mii Cael|Elite Knight|1866|108056359452
+40|Detrator|Elite Knight|1862|107418266952
+41|Waldir paredao|Elite Knight|1801|97123089257
+42|Ninja Nobushi|Elite Knight|1778|93471165508
+43|Sheng Yu|Royal Paladin|1773|92703933646
+44|Meka Ek|Elite Knight|1750|89114970232
+45|Drex Unstoppable|Elite Knight|1741|87691304392
+46|Marecha|Royal Paladin|1722|84927339699
+47|Priorzera|Master Sorcerer|1721|84719123496
+48|Bad Higz|Royal Paladin|1714|83683735514
+49|Baiana Truelove|Master Sorcerer|1712|83397101168
+50|Dah Hawk|Master Sorcerer|1710|83132306182
+51|Duke Dan|Master Sorcerer|1696|81057355914
+52|Fronersz|Elite Knight|1687|79851431057
+53|Devilek San|Royal Paladin|1686|79657088619
+54|Wilfer|Royal Paladin|1669|77338594345
+55|Horthobom|Royal Paladin|1632|72256096042
+56|Guedao Noe|Exalted Monk|1617|70212396833
+57|Name Changed|Elite Knight|1612|69607765315
+58|Arraya|Elder Druid|1602|68288610896
+59|Cavaleira Shaw|Elite Knight|1593|67170969341
+60|Nyraz|Elite Knight|1590|66789288490
+61|Tequilao Truelove|Exalted Monk|1588|66605812839
+62|Is Mael|Elder Druid|1583|65919667203
+63|Paulitos|Royal Paladin|1577|65119270383
+64|Mads Max|Master Sorcerer|1574|64811759691
+65|Eri Cansado|Elite Knight|1571|64492605836
+66|Ulvis|Elder Druid|1571|64406096651
+67|Sir Blackletter|Elite Knight|1566|63771334852
+68|Deck Shaww|Royal Paladin|1558|62821527052
+69|Alfa Rafa|Royal Paladin|1558|62788478871
+70|No Galantia|Royal Paladin|1556|62632875289
+71|Loth Back|Elder Druid|1554|62363361800
+72|Lady Moreca|Master Sorcerer|1551|62000513339
+73|Hagorunascaras|Elder Druid|1548|61685993400
+74|Gastlyy|Royal Paladin|1512|57437776549
+75|Rapa Dura|Elite Knight|1504|56544870182
+76|Ar Rogante|Royal Paladin|1503|56378199554
+77|Dugzera|Master Sorcerer|1495|55488596296
+78|Brunao Tryhardz|Elite Knight|1494|55365494845
+79|Benzedrina|Royal Paladin|1492|55171784984
+80|Olooz Rhaio|Elite Knight|1491|55083668050
+81|Gladiador Anciao|Elite Knight|1489|54882264484
+82|Curandeiro Guardiao|Elder Druid|1488|54787058595
+83|Zotis|Master Sorcerer|1482|54044305599
+84|Carlos Cansado|Sorcerer|1480|53816737339
+85|Guewe|Elite Knight|1480|53815634269
+86|Denersz|Elite Knight|1460|51708251873
+87|Tiio Zumzum|Royal Paladin|1460|51689484588
+88|Dallssz|Elder Druid|1459|51637339810
+89|Vinced|Elder Druid|1454|51072457382
+90|Causzerah|Elite Knight|1447|50363737174
+91|Blame Mitel|Elite Knight|1446|50247400371
+92|Willelm Skybolt|Royal Paladin|1438|49394910739
+93|Sabio Guerreiro Vacariano|Elder Druid|1438|49374673017
+94|Brew Bane|Master Sorcerer|1437|49290952343
+95|Vini Sem Uh|Master Sorcerer|1433|48863023767
+96|Type deco hunter|Elder Druid|1429|48459055322
+97|Poderes Absurdos|Elite Knight|1428|48362595583
+98|Buuz Latinha|Master Sorcerer|1426|48131260070
+99|Luke Lockdown|Master Sorcerer|1416|47145527155
+100|Mae Sol Teira|Elite Knight|1408|46326465607
+101|Poliwhirl|Elite Knight|1386|44193140675
+102|Deggal|Elite Knight|1379|43600167341
+103|Daslei Ek Dinovo|Elite Knight|1376|43300212832
+104|Fuppey|Elite Knight|1376|43284059086
+105|Geo Eoh Bala|Royal Paladin|1368|42542671989
+106|Gerbatim|Elder Druid|1366|42372277401
+107|Duke Draco|Elite Knight|1362|41969390285
+108|Viperzao|Elite Knight|1353|41173257834
+109|Thyrakos|Elite Knight|1352|41080967561
+110|Duke Healer|Elder Druid|1349|40767751695
+111|Radilero|Elder Druid|1349|40747040899
+112|Ignius Riland|Elite Knight|1348|40683426559
+113|Gilzerasz|Elite Knight|1348|40671879578
+114|Raph|Elite Knight|1348|40646181408
+115|Cyanz|Elite Knight|1345|40435324067
+116|Fehen|Elite Knight|1340|39953534070
+117|Leewinter|Elder Druid|1339|39865493338
+118|Kaitos Silverheart|Elite Knight|1338|39751519050
+119|Wolux|Royal Paladin|1334|39435472824
+120|Cesinha Vigarista|Master Sorcerer|1334|39409962344
+121|Prime Credibilidades|Master Sorcerer|1327|38782626626
+122|Geekzera|Elder Druid|1326|38733126588
+123|Junos Silverheart|Elder Druid|1313|37560905121
+124|Asgarinha|Royal Paladin|1305|36903888665
+125|Tu uk|Royal Paladin|1303|36776807267
+126|Lethalzinho Frost|Elder Druid|1302|36699168095
+127|Polastreli Tryhardz|Master Sorcerer|1300|36516496218
+128|Ber Na|Master Sorcerer|1299|36367044119
+129|Dolly Insano|Elite Knight|1298|36324157506
+130|Dymyyy|Elder Druid|1288|35486323258
+131|Tteuh|Elder Druid|1288|35446529386
+132|Tiaum Damassa|Elder Druid|1283|35082357558
+133|Luke Oneup|Royal Paladin|1283|35059307489
+134|Spytek|Royal Paladin|1279|34763493379
+135|Narizzinho|Royal Paladin|1279|34757934671
+136|Grilo Vis Hur|Master Sorcerer|1271|34105587031
+137|Plag Enjoyer|Elite Knight|1260|33252650455
+138|Kyos Mosus|Royal Paladin|1256|32912966197
+139|Dereda Zirbi|Knight|1253|32670945632
+140|Churras|Royal Paladin|1252|32612578599
+141|Aseral|Elite Knight|1250|32403295540
+142|Priorzao|Elite Knight|1248|32314784037
+143|Amandah|Elite Knight|1243|31885020082
+144|Skariusz|Master Sorcerer|1241|31710030385
+145|Pretii|Elder Druid|1237|31468363926
+146|Varus Ironman|Royal Paladin|1235|31252651513
+147|Rieslinger|Elder Druid|1231|30955769828
+148|Fiooti|Elder Druid|1225|30515353687
+149|Belgra Lord|Elite Knight|1224|30465257560
+150|Magic Nenec|Royal Paladin|1224|30444741212
+151|Sage Trys|Master Sorcerer|1220|30158416827
+152|Fred the Insane|Royal Paladin|1219|30066505375
+153|Zukin|Elder Druid|1216|29845597734
+154|Brunousz Arrependido|Master Sorcerer|1213|29625390709
+155|Monk Di Calvo|Exalted Monk|1209|29335569809
+156|Gran Pedila Spirit|Elder Druid|1207|29223878028
+157|Guizz Nettdown|Elder Druid|1201|28741885188
+158|Don Casemari|Elite Knight|1196|28434436210
+159|The Butcheer|Royal Paladin|1195|28361614490
+160|Shoxxzera|Elder Druid|1194|28250344477
+161|Healing Siosz|Elder Druid|1188|27829260464
+162|Voldyz|Exalted Monk|1187|27766975890
+163|Im Lunamazing|Elder Druid|1186|27681859806
+164|Hany Meowth|Elite Knight|1186|27665397410
+165|Kalki|Elite Knight|1185|27635509274
+166|Kaiovas Sorc|Master Sorcerer|1184|27539860598
+167|Sousinha Sniper|Royal Paladin|1181|27350081483
+168|Pe Dila|Elite Knight|1179|27187680118
+169|Weditta|Royal Paladin|1175|26953374395
+170|Kas Sol|Elder Druid|1171|26647750056
+171|Duff The Wise|Master Sorcerer|1169|26529879062
+172|Alley Frog|Master Sorcerer|1169|26500622981
+173|No Primal Ed|Elder Druid|1162|26033774925
+174|Mestree Kinaa|Elite Knight|1162|26029200528
+175|Anatomia Strachu|Royal Paladin|1162|26015063191
+176|Vandrinho|Elite Knight|1160|25904974806
+177|Azul Vivi|Elder Druid|1141|24690827885
+178|Tchevelle|Elite Knight|1141|24664459626
+179|Wanted Lonnan|Elite Knight|1140|24626268016
+180|Tylko Ziomus|Elder Druid|1139|24537046246
+181|Dimynelson|Exalted Monk|1139|24533256977
+182|Kiprior|Elder Druid|1138|24465386138
+183|Astary|Elite Knight|1137|24418899824
+184|Sane Insaneavel|Elder Druid|1132|24053816214
+185|Catnipsz|Elder Druid|1128|23833765498
+186|Brooneek|Master Sorcerer|1128|23795031888
+187|Vulgo Raphaeta|Elite Knight|1127|23732701604
+188|Goodskills Gems|Elder Druid|1122|23449825186
+189|Farmer Tryhardz|Elite Knight|1120|23328561273
+190|Jorgernaut the Great|Royal Paladin|1117|23126280796
+191|Teiixeiraa|Elder Druid|1116|23089161061
+192|Hosuwo|Master Sorcerer|1116|23075981489
+193|Blkzera|Elder Druid|1115|23033643526
+194|Rieslinger Drei|Elder Druid|1115|22987005163
+195|Brozika|Elite Knight|1114|22952992713
+196|Mini Lethalzinho|Elder Druid|1113|22861362894
+197|Bjorn Leif|Elite Knight|1112|22810307382
+198|Sir Cobolero|Elite Knight|1108|22593256243
+199|Nelson no Tak|Elder Druid|1106|22459078764
+200|Susi Tardis|Master Sorcerer|1105|22414014129
+201|Bonglear|Elite Knight|1102|22205878969
+202|Robacena Prime|Elite Knight|1102|22204597708
+203|Thii Pally|Royal Paladin|1102|22189820202
+204|Sanzor Invencivel|Exalted Monk|1090|21467145489
+205|Vanutti|Elite Knight|1089|21410715248
+206|Mi Chi|Elite Knight|1088|21352544741
+207|Nevin Lepus|Elite Knight|1085|21191886521
+208|Rilippi|Master Sorcerer|1083|21061555976
+209|Darky Villion|Royal Paladin|1083|21060121376
+210|Je es|Elder Druid|1082|21031181055
+211|Luisao Isadora Exclusive|Elder Druid|1082|21000437498
+212|Rizomar|Exalted Monk|1080|20915945894
+213|Boyfaarmeer|Elite Knight|1077|20747207594
+214|Elza ek|Elite Knight|1070|20325690992
+215|Kadarn|Elite Knight|1068|20222663156
+216|Manquinho|Elite Knight|1067|20155675348
+217|Dcaari|Elite Knight|1066|20111809487
+218|Kerberus Soul|Master Sorcerer|1062|19880729425
+219|Milkymellow|Elite Knight|1060|19791404913
+220|Alkalyn Pyrosage|Master Sorcerer|1059|19685194812
+221|Silkyy|Elder Druid|1058|19644995751
+222|Sauloso|Master Sorcerer|1057|19581113388
+223|Gabz Empacado|Elite Knight|1055|19509112122
+224|Dedokz|Royal Paladin|1055|19482028494
+225|Kazan Dog|Royal Paladin|1054|19425324038
+226|Teuseck|Elite Knight|1050|19213928754
+227|Saint Villion|Elder Druid|1044|18856716989
+228|Extaa|Elite Knight|1042|18758870422
+229|Goth Knight|Elite Knight|1042|18751998343
+230|Wavinho Missinho|Master Sorcerer|1041|18731111120
+231|Betonowy Simba|Elite Knight|1041|18694854247
+232|Mouton|Exalted Monk|1035|18392298399
+233|Nirots|Elite Knight|1034|18369916970
+234|Guuns|Royal Paladin|1034|18335166301
+235|Ayonica|Elite Knight|1033|18294952893
+236|Zoogoo|Elder Druid|1032|18256070073
+237|Abeast Adyn|Royal Paladin|1030|18129113353
+238|Japassauro|Master Sorcerer|1026|17902830492
+239|Pagodeiiro Calvo|Elite Knight|1025|17887403717
+240|Misto Salada Egg|Elite Knight|1020|17586620803
+241|Silordel|Elite Knight|1014|17281755270
+242|Luke no Flam|Master Sorcerer|1014|17277185649
+243|Kaalee|Elder Druid|1011|17171638385
+244|Vy Se|Master Sorcerer|1009|17032971304
+245|Vaal inci aga|Master Sorcerer|1009|17022829854
+246|Toxic Art|Elite Knight|1008|17005810285
+247|Tatuzito Full Pve|Elite Knight|1007|16952920868
+248|Avemarros|Elder Druid|1007|16935786160
+249|Bantyzerah|Elder Druid|1002|16678031970
+250|Taka hashi|Elite Knight|999|16562948557
+251|Amy Serenity|Elder Druid|998|16505734146
+252|Bilozon|Elite Knight|998|16495316774
+253|Abrick Deathstorm|Elite Knight|998|16468616870
+254|Brenin Moedasz Irresistivel|Elite Knight|994|16295711892
+255|Speyburn|Master Sorcerer|994|16295144717
+256|Fullrandom Forsell|Elder Druid|994|16277964613
+257|Immovable Sovereign|Elite Knight|992|16213400619
+258|Gran Arcane Spirit|Elite Knight|992|16203817910
+259|Morpheas|Royal Paladin|991|16164611141
+260|Telnerzito Full Pve|Elder Druid|990|16105920064
+261|True Harmaxis|Royal Paladin|987|15952936719
+262|Neevez Relajado|Royal Paladin|977|15495214647
+263|Zainzin|Royal Paladin|977|15452273800
+264|Brutinsz Omni|Master Sorcerer|970|15139975239
+265|Havok Ravage|Master Sorcerer|968|15028892462
+266|Wishs|Elite Knight|967|15002779232
+267|Ninja no Nelson|Elite Knight|960|14666262829
+268|Schba|Elite Knight|959|14619786595
+269|Misto Lejo|Elder Druid|958|14579507935
+270|Balthor Thunderhammer|Elite Knight|957|14519510407
+271|Ricosz|Elite Knight|956|14477695085
+272|Mestre Queijo|Elite Knight|953|14350069232
+273|Perrout Ek|Elite Knight|952|14303496537
+274|Coelhonix|Elite Knight|951|14279983892
+275|Reevoltadoz|Elder Druid|951|14248399140
+276|Elys Lowe|Elite Knight|948|14139475922
+277|Wizard Debochado|Sorcerer|942|13860423615
+278|Alregon|Elder Druid|940|13793277956
+279|Guaxinim Selvagem|Royal Paladin|940|13778666398
+280|Marxenho|Royal Paladin|937|13654313559
+281|Penguinm|Master Sorcerer|932|13407541636
+282|Jason Deluro|Royal Paladin|926|13171728993
+283|Su Bako|Royal Paladin|924|13063390915
+284|Hila Strife|Elite Knight|922|12998653464
+285|Fanndr|Elite Knight|921|12965009578
+286|Arroz Com Batata|Elite Knight|921|12959075470
+287|Syrax Liippi|Elite Knight|918|12832883903
+288|Monk Fracassado|Exalted Monk|915|12720538846
+289|Colltz|Elite Knight|915|12689559783
+290|Pathintany|Elder Druid|913|12624195809
+291|Xurispa|Elder Druid|912|12561492932
+292|Kryja|Elite Knight|909|12447422676
+293|Vinii Malvadeza|Master Sorcerer|909|12439529371
+294|Fred zera|Royal Paladin|908|12435577603
+295|Super Pratinha|Elite Knight|907|12368174373
+296|Ranon Noe|Master Sorcerer|905|12299315519
+297|Anna Winter|Elite Knight|900|12102656449
+298|Diego Burnautado|Elder Druid|896|11948494156
+299|Iago el Curandeiro|Elder Druid|896|11921426844
+300|Parametro Arda|Master Sorcerer|896|11917098258
+301|Shyono|Royal Paladin|895|11906323397
+302|Lemon Pig|Master Sorcerer|895|11905659108
+303|Pkzera|Royal Paladin|894|11857980775
+304|Elrain|Elite Knight|893|11822075384
+305|Lord Azagthoth|Elite Knight|891|11720664054
+306|Nocny von Evening|Elite Knight|889|11655316823
+307|Zhavyun|Elite Knight|887|11590510733
+308|Shann Perez|Elite Knight|885|11509583974
+309|Otsutsuki Kiriu|Elder Druid|882|11377203162
+310|Arkfine|Elite Knight|882|11366777661
+311|Moramed|Master Sorcerer|881|11352818802
+312|Centuriun|Elite Knight|880|11305804105
+313|Hany Witch|Elder Druid|876|11156299175
+314|Galletita uwu|Elite Knight|875|11117000232
+315|Cuelhoo|Elite Knight|875|11109531773
+316|Morbo Mabyst|Master Sorcerer|871|10951524042
+317|Bahzzur|Royal Paladin|871|10946898235
+318|Devv Karretao|Elite Knight|870|10927922775
+319|Schnekel Respeitavel|Exalted Monk|870|10910630113
+320|Vanderlei Ek Dinovo|Elite Knight|869|10880345580
+321|Pandora Pax|Elite Knight|867|10789320541
+322|Harlao|Elite Knight|866|10784315065
+323|Un named|Elite Knight|865|10743193819
+324|Eca Zao|Elite Knight|865|10735743787
+325|Last Anngel|Royal Paladin|865|10716022250
+326|Jacques|Royal Paladin|863|10668334716
+327|Scher the Knight|Elite Knight|863|10646663956
+328|Kelvin Klein|Elite Knight|862|10607660165
+329|Yamandu Gente Bonissima|Elite Knight|861|10593853664
+330|Zukinzinho|Elder Druid|861|10589505200
+331|Alfredo Ultimo|Elite Knight|861|10575202420
+332|Tempestuosoo|Elder Druid|860|10555641134
+333|Castolo Trickster|Elite Knight|859|10518378218
+334|Relentless Nino|Elder Druid|858|10472302121
+335|Moorti|Elder Druid|858|10470541975
+336|Solowiec|Elite Knight|857|10447828052
+337|Ator|Royal Paladin|857|10447296989
+338|Hayato Rai|Elite Knight|856|10404532706
+339|Kerms|Royal Paladin|853|10301944641
+340|Tytanicos|Elite Knight|853|10282856045
+341|Brozion|Master Sorcerer|853|10272497415
+342|Sigrid Supreme|Elite Knight|852|10243250043
+343|Davizin Von Terryer|Elder Druid|852|10238647065
+344|Verdao Atirador|Royal Paladin|850|10191864971
+345|Ruiivaa|Elite Knight|846|10050459694
+346|Forezzk|Knight|846|10049078149
+347|Feanor Melkor|Elite Knight|846|10046506585
+348|Tuli Ow|Royal Paladin|846|10035699585
+349|Kraz Odian|Elite Knight|844|9959221091
+350|Dawno Nie Grane|Elite Knight|843|9920083856
+351|Blaade Knight|Elite Knight|842|9899508955
+352|Ghost Of Havoc|Elite Knight|842|9897191637
+353|Tictum Tictey Jalibrau|Knight|842|9893310434
+354|Doomclaw|Elite Knight|837|9733721571
+355|Urssuwo|Elder Druid|833|9575594119
+356|Quersio fazdruid|Elder Druid|830|9463872734
+357|Xar Lovinha|Elite Knight|830|9463065944
+358|Grappig|Royal Paladin|829|9435520131
+359|Gunzer|Elite Knight|828|9422455696
+360|Truezao|Exalted Monk|828|9412354349
+361|Bartiira|Elder Druid|827|9388862189
+362|Lorek Awesome Keepline|Elite Knight|826|9355798660
+363|Newbiexz|Master Sorcerer|823|9238415386
+364|Tenente Mussarella|Elite Knight|823|9231969797
+365|Monzz Full Pve|Elite Knight|820|9127984230
+366|Ogden Morrow|Master Sorcerer|819|9121674712
+367|Little Ouro|Elite Knight|819|9118212096
+368|Thorin Soulblade|Elite Knight|819|9092254748
+369|Modelao Alfa|Elite Knight|818|9076153379
+370|Dargo Lerdok|Paladin|818|9058237295
+371|Hyuzah|Master Sorcerer|817|9046677936
+372|Oathcaster|Master Sorcerer|816|8998849658
+373|Nevia Acalarius|Elder Druid|816|8996218668
+374|Sandogrind Paladino|Royal Paladin|814|8947304405
+375|Izornelson|Elite Knight|814|8938737913
+376|Dahaka|Elite Knight|814|8926986549
+377|Gicownz|Elite Knight|809|8766009801
+378|Mortii|Elder Druid|808|8758654635
+379|Aquanoble|Elite Knight|805|8650593825
+380|Viperzin|Elite Knight|805|8649346743
+381|Opie Racha Cranio|Elite Knight|802|8555856554
+382|Alucard Ice|Elder Druid|802|8552157098
+383|Sensei Dan|Elite Knight|802|8538428684
+384|Iago el Inevitable|Elite Knight|802|8534648219
+385|Reforge|Elite Knight|801|8504026681
+386|Huppermago|Master Sorcerer|801|8503016659
+387|Agust Ironman|Elder Druid|799|8467965660
+388|Dudz Royal|Royal Paladin|799|8446117898
+389|Jorgizon|Elder Druid|797|8403990986
+390|Darky Armstrong|Royal Paladin|797|8400616604
+391|Akiles Skah|Elite Knight|797|8378315421
+392|Aaryn Knight|Elite Knight|796|8353934657
+393|Trys Noe|Exalted Monk|795|8330792152
+394|Azzury|Royal Paladin|795|8319083286
+395|Narave|Elder Druid|793|8256561601
+396|Elite Smigiel|Elite Knight|792|8227784314
+397|Nyxclaw|Elite Knight|790|8172384353
+398|Potlart Dammysan|Elite Knight|788|8111728175
+399|Gestrinona|Elite Knight|788|8104397028
+400|Raz Comportado|Elder Druid|787|8081612306
+401|Cranif Ironman|Master Sorcerer|787|8073563702
+402|The Costela|Royal Paladin|786|8044578621
+403|Burtantan|Exalted Monk|782|7933784624
+404|Kong Louko|Master Sorcerer|782|7922829562
+405|Barba Descansada|Master Sorcerer|778|7799618618
+406|Monkatzu|Exalted Monk|778|7797942003
+407|Rorro Pacembra|Elite Knight|777|7769230434
+408|Peverezo|Elite Knight|777|7760908385
+409|Dedinho No Sio|Elder Druid|775|7705357772
+410|Elite Gqral|Elite Knight|775|7698304399
+411|Roo ddi|Exalted Monk|774|7672722712
+412|Monk Da Vinci|Exalted Monk|774|7672212993
+413|Majinn Soul|Elder Druid|773|7650451555
+414|Shil Nephra|Elite Knight|772|7612272623
+415|Kal Vasnik|Royal Paladin|771|7607168411
+416|Cortexy|Royal Paladin|771|7603096461
+417|Nielzor|Elite Knight|770|7565593504
+418|Aduukss|Druid|767|7481572984
+419|Gleissolo Ironman|Elite Knight|765|7420611605
+420|Maga Pipia|Master Sorcerer|764|7392273492
+421|Bet On Yourself|Master Sorcerer|764|7380626588
+422|Xalnor|Elite Knight|763|7360277468
+423|Angry Hulk|Elite Knight|762|7326871347
+424|Pizza Pally|Royal Paladin|759|7252185395
+425|Phzinhoh|Elite Knight|759|7232468867
+426|Lelouch Hunted|Elder Druid|758|7222967196
+427|Frenzyaxe|Exalted Monk|758|7218715924
+428|Lawyer Win|Elite Knight|757|7189284878
+429|Elan Striker|Exalted Monk|756|7171000313
+430|Ecktao Robacena|Elite Knight|756|7145093919
+431|Encanto Meu|Elite Knight|755|7130697596
+432|Soul Dyn|Royal Paladin|754|7093303663
+433|Hiirasawa|Master Sorcerer|754|7089319852
+434|Frankiies|Elite Knight|753|7065818804
+435|Hjundai|Elite Knight|752|7052639884
+436|Pobrimm|Elite Knight|751|7008405032
+437|Itz Megan|Elder Druid|749|6974712310
+438|Akuma Nikaido|Elite Knight|748|6940926156
+439|Ramon The Creator|Royal Paladin|748|6929130286
+440|Waka Laka Reincarnation|Exalted Monk|748|6923275112
+441|None Flow|Master Sorcerer|747|6898304261
+442|Lohane Vekanandre Raiolaser|Sorcerer|746|6886605710
+443|Bultad|Elite Knight|745|6848567582
+444|Cazian|Elite Knight|744|6814246356
+445|Mage of Camarote|Master Sorcerer|743|6788641658
+446|Kakozon|Elite Knight|742|6767156906
+447|Kenvor|Elite Knight|740|6711224710
+448|Mini Pagodeiro|Elite Knight|738|6657330456
+449|Sinnerz|Elder Druid|738|6644939279
+450|Uchiha Pasoka|Royal Paladin|735|6572409764
+451|Vastattus|Master Sorcerer|734|6561089230
+452|Azzxz|Elder Druid|732|6502468543
+453|Fazzter|Elder Druid|732|6488166598
+454|Nizupn|Elder Druid|730|6438060736
+455|Pres Ciso|Elite Knight|730|6434395810
+456|Tankila|Elite Knight|729|6430250294
+457|Belphemon|Royal Paladin|729|6425433144
+458|Truxton Paladin|Royal Paladin|728|6386850949
+459|Zepherim|Elite Knight|727|6353667097
+460|Aetherial Zaerus|Exalted Monk|725|6319891873
+461|Maria Duarda|Elder Druid|725|6316040878
+462|Mark Wallace|Royal Paladin|725|6315683277
+463|Tyranicos|Elite Knight|725|6314557218
+464|Voufazer Umdruid|Elder Druid|725|6307144110
+465|Vastattor|Elite Knight|725|6301578344
+466|Metatrom|Knight|724|6289442893
+467|Jahdara|Royal Paladin|723|6265210649
+468|Dari ghan|Royal Paladin|723|6261505689
+469|Puutifiree|Elite Knight|723|6257774650
+470|Scrype|Elite Knight|723|6247789295
+471|Farza Knight|Elite Knight|722|6234769852
+472|Sarah Hellfist|Elder Druid|722|6232032844
+473|Maximus Shotz|Elite Knight|721|6196025598
+474|Flynks|Elite Knight|720|6192912340
+475|Defiant Fighter|Elite Knight|713|6002422723
+476|Yoriiichi|Elite Knight|712|5977606732
+477|Gahk|Elite Knight|711|5946275192
+478|Sabio Sorcerer Vacariano|Master Sorcerer|710|5927499804
+479|Brenoob|Exalted Monk|709|5911796116
+480|Shamim|Elite Knight|709|5910232430
+481|Nixlly|Elder Druid|709|5909326632
+482|Atracker|Exalted Monk|709|5907164398
+483|Doom Leleh|Elder Druid|707|5855423242
+484|Gran Igao Spirit|Exalted Monk|706|5815771307
+485|Malkzz|Master Sorcerer|705|5813080283
+486|Xehior|Knight|705|5792243645
+487|Zolkir the Therapist|Royal Paladin|702|5736290649
+488|Frostblight|Elder Druid|700|5671394807
+489|Raizen Memory|Royal Paladin|700|5668914922
+490|Lagartixa frita|Master Sorcerer|698|5643355274
+491|Coyote The Druida|Elder Druid|696|5587438581
+492|Emersao of Al|Exalted Monk|695|5557151898
+493|Pan Korkodyl|Elite Knight|693|5504790367
+494|Adrianou|Royal Paladin|692|5488143965
+495|Cosiula|Knight|689|5421961941
+496|Gerdrox|Elder Druid|687|5368945923
+497|Jacarets|Elite Knight|686|5355752516
+498|Beaga Desempregado|Royal Paladin|686|5339979609
+499|Valen Donada|Elite Knight|685|5324896116
+500|Ueslei|Elite Knight|684|5296143903
