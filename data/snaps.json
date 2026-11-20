@@ -2725,5 +2725,32 @@
 "skill": 119
 }
 }
+},
+"2026-11-19": {
+"source": "tibiadata",
+"ss": "2026-11-20T09:00:00Z",
+"fetchedAt": "2026-11-20T13:40:36Z",
+"chars": {
+"Gabz Implacavel": {
+"exp": 199891999362,
+"level": 2291,
+"skill": 139
+},
+"Marcha Implacavel": {
+"exp": 185020106917,
+"level": 2232,
+"skill": 139
+},
+"Kipersz": {
+"exp": 158722828844,
+"level": 2121,
+"skill": 132
+},
+"Gabz Empacado": {
+"exp": 19608676639,
+"level": 1057,
+"skill": 119
+}
+}
 }
 }
